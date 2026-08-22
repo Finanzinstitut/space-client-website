@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Space Client — Minecraft-Client für 26.2</title>
+<title>Space Client — a Minecraft client for 26.2</title>
 <meta name="description" content="Space Client ist ein Launcher und ein Fabric-Mod für Minecraft 26.2: 24 HUD-Module, Modrinth-Browser, mehrere Konten und eine Live-Konsole." />
 <link rel="icon" href="assets/favicon.png" />
 <link rel="stylesheet" href="style.css" />
@@ -20,11 +20,16 @@
     <img src="assets/icon.png" alt="" width="34" height="34" />
     <span class="brand-text"><b>SPACE</b><i>CLIENT</i></span>
   </a>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" class="lang-btn is-on" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="de">DE</button>
+  </div>
   <nav class="nav-links">
-    <a href="#module">Module</a>
-    <a href="#launcher">Launcher</a>
-    <a href="#cosmetics">Cosmetics</a>
-    <a class="btn primary small" href="#download">Herunterladen</a>
+    <a href="#module" data-i18n="nav_modules">Modules</a>
+    <a href="#launcher" data-i18n="nav_launcher">Launcher</a>
+    <a href="#nowplaying" data-i18n="nav_music">Music</a>
+    <a href="#cosmetics" data-i18n="nav_cosmetics">Cosmetics</a>
+    <a class="btn primary small" href="#download" data-i18n="nav_download">Download</a>
   </nav>
 </header>
 
@@ -32,14 +37,13 @@
 
   <section class="hero">
     <p class="eyebrow">Minecraft 26.2 · Fabric</p>
-    <h1>Ein Client, der<br /><span class="grad">aus dem Weg geht.</span></h1>
+    <h1><span data-i18n="hero_h1a">A client that</span><br /><span class="grad" data-i18n="hero_h1b">stays out of the way.</span></h1>
     <p class="lede">
-      Space Client bringt 24 HUD-Module, einen Launcher mit mehreren Konten
-      und Cosmetics über Cosmetica zusammen. Alles quelloffen, alles kostenlos.
+<span data-i18n="hero_lede">Space Client brings together 24 HUD modules, a launcher with multi-account support, and cosmetics through Cosmetica. Open source, free.</span>
     </p>
     <div class="hero-actions">
-      <a class="btn primary" href="#download">Launcher herunterladen</a>
-      <a class="btn secondary" href="https://github.com/Finanzinstitut" target="_blank" rel="noopener">Quellcode ansehen</a>
+      <a class="btn primary" href="#download" data-i18n="hero_dl">Download the launcher</a>
+      <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client" target="_blank" rel="noopener" data-i18n="hero_source">View the source</a>
     </div>
 
     <!-- Signature: the launcher's live console, the thing you actually watch
@@ -47,93 +51,91 @@
     <div class="console" role="img" aria-label="Beispielausgabe der Live-Konsole beim Start einer Instanz">
       <div class="console-bar">
         <span class="dot"></span>
-        <span class="console-title">Live-Konsole — cozy-and-pvp 26.2</span>
-        <span class="console-state">läuft</span>
+        <span class="console-title" data-i18n="con_title">Live console — cozy-and-pvp 26.2</span>
+        <span class="console-state" data-i18n="con_state">running</span>
       </div>
       <pre class="console-body"><code id="console-out"></code><span class="caret" aria-hidden="true"></span></pre>
     </div>
   </section>
 
   <section id="module" class="section">
-    <p class="eyebrow">Im Spiel</p>
-    <h2>24 Module, einzeln schaltbar</h2>
+    <p class="eyebrow" data-i18n="eb_ingame">In game</p>
+    <h2 data-i18n="mod_h2">24 modules, each on its own switch</h2>
     <p class="section-lede">
-      Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln
-      einschalten, einstellen und im HUD frei platzieren.
+<span data-i18n="mod_lede">Right Shift opens the menu. Every module can be switched on, configured and placed anywhere on the HUD.</span>
     </p>
 
     <div class="cat">
       <h3 class="cat-title">HUD</h3>
       <ul class="grid">
-        <li class="card"><span>FPS</span></li>
-        <li class="card"><span>CPS</span></li>
-        <li class="card"><span>Ping</span></li>
-        <li class="card"><span>TPS</span></li>
-        <li class="card"><span>Uhr</span></li>
-        <li class="card"><span>Koordinaten</span></li>
-        <li class="card"><span>Kompass</span></li>
-        <li class="card"><span>Tempo</span></li>
-        <li class="card"><span>Sitzung</span></li>
-        <li class="card"><span>Strecke</span></li>
-        <li class="card"><span>Arbeitsspeicher</span></li>
-        <li class="card"><span>Serverinfo</span></li>
+        <li class="card"><span data-i18n="m0">FPS</span></li>
+        <li class="card"><span data-i18n="m1">CPS</span></li>
+        <li class="card"><span data-i18n="m2">Ping</span></li>
+        <li class="card"><span data-i18n="m3">TPS</span></li>
+        <li class="card"><span data-i18n="m4">Uhr</span></li>
+        <li class="card"><span data-i18n="m5">Koordinaten</span></li>
+        <li class="card"><span data-i18n="m6">Kompass</span></li>
+        <li class="card"><span data-i18n="m7">Tempo</span></li>
+        <li class="card"><span data-i18n="m8">Sitzung</span></li>
+        <li class="card"><span data-i18n="m9">Strecke</span></li>
+        <li class="card"><span data-i18n="m10">Arbeitsspeicher</span></li>
+        <li class="card"><span data-i18n="m11">Serverinfo</span></li>
       </ul>
     </div>
 
     <div class="cat">
-      <h3 class="cat-title">Kampf &amp; Eingabe</h3>
+      <h3 class="cat-title" data-i18n="cat_combat">Combat &amp; input</h3>
       <ul class="grid">
-        <li class="card"><span>Tastenanzeige</span></li>
-        <li class="card"><span>Hitboxen</span></li>
-        <li class="card"><span>Trefferfarbe</span></li>
-        <li class="card"><span>Fadenkreuz-Info</span></li>
-        <li class="card"><span>Eingaberate</span></li>
-        <li class="card"><span>Mausweg</span></li>
+        <li class="card"><span data-i18n="m12">Tastenanzeige</span></li>
+        <li class="card"><span data-i18n="m13">Hitboxen</span></li>
+        <li class="card"><span data-i18n="m14">Trefferfarbe</span></li>
+        <li class="card"><span data-i18n="m15">Fadenkreuz-Info</span></li>
+        <li class="card"><span data-i18n="m16">Eingaberate</span></li>
+        <li class="card"><span data-i18n="m17">Mausweg</span></li>
       </ul>
     </div>
 
     <div class="cat">
-      <h3 class="cat-title">Sicht &amp; Werkzeuge</h3>
+      <h3 class="cat-title" data-i18n="cat_visual">View &amp; tools</h3>
       <ul class="grid">
-        <li class="card"><span>Zoom</span></li>
-        <li class="card"><span>Chunk-Grenzen</span></li>
-        <li class="card"><span>Wehende Capes</span></li>
-        <li class="card"><span>Blickachse sperren</span></li>
-        <li class="card"><span>Koordinaten kopieren</span></li>
-        <li class="card"><span>Now Playing</span></li>
+        <li class="card"><span data-i18n="m18">Zoom</span></li>
+        <li class="card"><span data-i18n="m19">Chunk-Grenzen</span></li>
+        <li class="card"><span data-i18n="m20">Wehende Capes</span></li>
+        <li class="card"><span data-i18n="m21">Blickachse sperren</span></li>
+        <li class="card"><span data-i18n="m22">Koordinaten kopieren</span></li>
+        <li class="card"><span data-i18n="m23">Now Playing</span></li>
       </ul>
     </div>
   </section>
 
   <section id="launcher" class="section split">
     <div>
-      <p class="eyebrow">Auf dem Desktop</p>
-      <h2>Der Launcher</h2>
+      <p class="eyebrow" data-i18n="eb_desktop">On the desktop</p>
+      <h2 data-i18n="lau_h2">The launcher</h2>
       <p class="section-lede">
-        Instanzen anlegen, Mods finden, Konten wechseln — ohne den Browser
-        zu öffnen.
+<span data-i18n="lau_lede">Create instances, find mods, switch accounts — without opening a browser.</span>
       </p>
       <ul class="ticks">
-        <li><b>Mehrere Konten</b> über Microsoft-Anmeldung, Wechsel ohne Neustart.</li>
-        <li><b>Modrinth eingebaut</b> — suchen, installieren, Abhängigkeiten kommen mit.</li>
-        <li><b>Modpacks importieren</b> aus <code>.mrpack</code>-Dateien.</li>
-        <li><b>Jede Java-Version</b> und jeder Mod-Loader, pro Instanz einstellbar.</li>
-        <li><b>Live-Konsole</b> für jede laufende Instanz, direkt aus der Instanzliste.</li>
-        <li><b>Cosmetica vorinstallieren</b> beim Anlegen einer Instanz, ein Haken genügt.</li>
+        <li data-i18n-html="l1"><b>Multiple accounts</b> through Microsoft sign-in, switched without restarting.</li>
+        <li data-i18n-html="l2"><b>Modrinth built in</b> — search, install, dependencies come along.</li>
+        <li data-i18n-html="l3"><b>Import modpacks</b> from <code>.mrpack</code> files.</li>
+        <li data-i18n-html="l4"><b>Any Java version</b> and any mod loader, set per instance.</li>
+        <li data-i18n-html="l5"><b>Live console</b> for every running instance, straight from the list.</li>
+        <li data-i18n-html="l6"><b>Preinstall Cosmetica</b> when creating an instance, one checkbox.</li>
       </ul>
     </div>
     <div class="panel-shot" aria-hidden="true">
       <div class="shot-side">
-        <span class="shot-row on">Instanzen</span>
+        <span class="shot-row on" data-i18n="shot_inst">Instances</span>
         <span class="shot-row">Mods</span>
-        <span class="shot-row">Konto</span>
+        <span class="shot-row" data-i18n="shot_acc">Account</span>
         <span class="shot-row">Skin</span>
-        <span class="shot-row">Einstellungen</span>
+        <span class="shot-row" data-i18n="shot_set">Settings</span>
       </div>
       <div class="shot-main">
         <div class="shot-head">
-          <span class="shot-chip live"><i></i> Läuft (1)</span>
-          <span class="shot-chip">+ Neue Instanz</span>
+          <span class="shot-chip live"><i></i> <span data-i18n="shot_run">Running (1)</span></span>
+          <span class="shot-chip" data-i18n="shot_new">+ New instance</span>
         </div>
         <div class="shot-card"><b>cozy-and-pvp</b><small>26.2 · Fabric</small></div>
         <div class="shot-card"><b>creative-flat</b><small>26.2 · Fabric</small></div>
@@ -142,47 +144,63 @@
     </div>
   </section>
 
+
+  <section id="nowplaying" class="section">
+    <p class="eyebrow" data-i18n="eb_music">Music</p>
+    <h2 data-i18n="np_h2">Now Playing</h2>
+    <p class="section-lede" data-i18n="np_lede">
+      Space Client reads the track from your Spotify or Amazon Music desktop app
+      and shows it on the HUD, with playback controls while chat is open.
+    </p>
+    <ul class="ticks">
+      <li data-i18n-html="np1"><b>On your HUD</b> — title, artist and the app it came from.</li>
+      <li data-i18n-html="np2"><b>Over your name</b> — other Space Client players see what you are listening to above your nametag. Off by default.</li>
+      <li data-i18n-html="np3"><b>Lyrics over your name</b> — the current line instead of the title, for players who turn it on.</li>
+    </ul>
+    <p class="warn" data-i18n="np_warn">
+      Lyrics are covered by copyright, and whether you may display them depends
+      on the song and where you are. The setting is off by default and using it
+      is your own responsibility.
+    </p>
+  </section>
+
   <section id="cosmetics" class="section">
-    <p class="eyebrow">Aussehen</p>
-    <h2>Cosmetics über Cosmetica</h2>
+    <p class="eyebrow" data-i18n="eb_looks">Looks</p>
+    <h2 data-i18n="cos_h2">Cosmetics through Cosmetica</h2>
     <p class="section-lede">
-      Capes, Flügel, Bandanas und Hörner kommen von
-      <a href="https://cosmetica.cc" target="_blank" rel="noopener">Cosmetica</a>,
-      erreichbar direkt aus dem Space-Client-Menü. Sie hängen an deinem
-      Cosmetica-Konto und begleiten dich auf jeden Server.
+      <span data-i18n="cos_lede_a">Capes, wings, bandanas and horns come from</span>
+      <a href="https://cosmetica.cc" target="_blank" rel="noopener">Cosmetica</a><span data-i18n="cos_lede_b">, reachable straight from the Space Client menu. They live on your Cosmetica account, so they follow you onto any server.</span>
     </p>
     <p class="note">
-      Cosmetica ist ein eigenständiges Projekt unter der Apache-2.0-Lizenz von
-      Isaiah Meek und Mekal Covic. Space Client zeigt seine Inhalte an und
-      beansprucht sie nicht als eigene.
+<span data-i18n="cos_note">Cosmetica is a separate project under the Apache 2.0 licence by Isaiah Meek and Mekal Covic. Space Client displays its content and makes no claim to it.</span>
     </p>
   </section>
 
   <section id="download" class="section download">
-    <p class="eyebrow">Loslegen</p>
-    <h2>Herunterladen</h2>
+    <p class="eyebrow" data-i18n="eb_start">Get started</p>
+    <h2 data-i18n="dl_h2">Download</h2>
 
     <div class="dl-grid">
       <article class="dl-card">
         <h3>Launcher</h3>
-        <p>Windows-Installer. Bringt Minecraft, Fabric und den Client-Mod selbst mit.</p>
-        <a class="btn primary" href="https://github.com/Finanzinstitut/space-client/releases" target="_blank" rel="noopener">Für Windows</a>
-        <p class="fineprint">Neueste Version auf GitHub Releases</p>
+        <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, Fabric and the client mod itself.</p>
+        <a class="btn primary" href="https://github.com/Finanzinstitut/space-client/releases" target="_blank" rel="noopener" data-i18n="dl_win">For Windows</a>
+        <p class="fineprint" data-i18n="dl_fp1">Latest version on GitHub Releases</p>
       </article>
 
       <article class="dl-card">
-        <h3>Nur der Mod</h3>
-        <p>Für alle, die schon einen Launcher haben. In den <code>mods</code>-Ordner legen.</p>
-        <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client-Mod/releases" target="_blank" rel="noopener">JAR herunterladen</a>
-        <p class="fineprint">Braucht Fabric Loader und Fabric API für 26.2</p>
+        <h3 data-i18n="dl_mod">The mod only</h3>
+        <p data-i18n-html="dl_mod_p">For anyone who already has a launcher. Drop it in the <code>mods</code> folder.</p>
+        <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client-Mod/releases" target="_blank" rel="noopener" data-i18n="dl_jar">Download the JAR</a>
+        <p class="fineprint" data-i18n="dl_fp2">Needs Fabric Loader and Fabric API for 26.2</p>
       </article>
     </div>
 
     <dl class="reqs">
       <div><dt>Minecraft</dt><dd>26.2</dd></div>
-      <div><dt>Loader</dt><dd>Fabric</dd></div>
-      <div><dt>Java</dt><dd>25 oder neuer</dd></div>
-      <div><dt>Konto</dt><dd>Microsoft, gekaufte Java Edition</dd></div>
+      <div><dt data-i18n="rq_loader">Loader</dt><dd>Fabric</dd></div>
+      <div><dt>Java</dt><dd data-i18n="rq_java_v">25 or newer</dd></div>
+      <div><dt data-i18n="rq_acc">Account</dt><dd data-i18n="rq_acc_v">Microsoft, Java Edition owned</dd></div>
     </dl>
   </section>
 
@@ -193,12 +211,12 @@
     <img src="assets/icon.png" alt="" width="26" height="26" />
     <span>Space Client</span>
   </div>
-  <p class="foot-note">
-    Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft
-    genehmigt oder mit ihnen verbunden.
+  <p class="foot-note" data-i18n="foot_note">
+    Not an official Minecraft product. Not approved by or associated with
+    Mojang or Microsoft.
   </p>
   <nav class="foot-links">
-    <a href="https://github.com/Finanzinstitut" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/Finanzinstitut/Space-Client" target="_blank" rel="noopener">GitHub</a>
     <a href="https://cosmetica.cc" target="_blank" rel="noopener">Cosmetica</a>
   </nav>
 </footer>
@@ -240,6 +258,8 @@
     setTimeout(step, 400);
   })();
 </script>
+
+<script src="lang.js"></script>
 
 </body>
 </html>

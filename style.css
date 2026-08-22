@@ -497,3 +497,48 @@ a:focus-visible, .btn:focus-visible {
   html { scroll-behavior: auto; }
   .card { transition: none; }
 }
+
+/* --- language switch --- */
+
+/*
+ * Sits beside the brand rather than out at the right with the navigation,
+ * because it changes the whole page rather than moving you around it.
+ */
+.lang {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  margin-right: auto;
+  margin-left: 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #100d2a;
+}
+.lang-btn {
+  all: unset;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  transition: background .15s ease, color .15s ease;
+}
+.lang-btn:hover { color: var(--text); }
+.lang-btn.is-on { background: var(--accent); color: #0a0820; }
+.lang-btn:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+/* --- a caution that has to be read, not skimmed past --- */
+
+.warn {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px solid #5a3a7a;
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: #170f2e;
+  color: var(--text-dim);
+  font-size: 14px;
+  max-width: 66ch;
+}
