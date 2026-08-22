@@ -221,43 +221,7 @@
   </nav>
 </footer>
 
-<script>
-  // The console types once on load. It is the one moving thing on the page, so
-  // it earns the attention rather than competing with anything else.
-  (function () {
-    var out = document.getElementById("console-out");
-    if (!out) return;
-
-    var lines = [
-      "[Launcher] Instanz cozy-and-pvp wird vorbereitet",
-      "[Launcher] Fabric Loader 0.19.3 fuer 26.2",
-      "[Launcher] 14 Mods geprueft, alle aktuell",
-      "[Launcher] Angemeldet als Finanzinstitut",
-      "[Client]   Space Client v0.1.0 geladen",
-      "[Client]   24 Module bereit — Rechte Umschalttaste oeffnet das Menue",
-      "[Client]   Cosmetica gefunden, Cosmetics aktiv",
-      "[Launcher] Spiel gestartet"
-    ];
-
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) {
-      out.textContent = lines.join("\n");
-      return;
-    }
-
-    var line = 0, chr = 0;
-    function step() {
-      if (line >= lines.length) return;
-      out.textContent = lines.slice(0, line).join("\n")
-        + (line ? "\n" : "")
-        + lines[line].slice(0, chr);
-      chr++;
-      if (chr > lines[line].length) { line++; chr = 0; setTimeout(step, 260); }
-      else setTimeout(step, 12);
-    }
-    setTimeout(step, 400);
-  })();
-</script>
+<!-- The console is driven by lang.js, so its lines follow the page language -->
 
 <script src="lang.js"></script>
 

@@ -75,6 +75,65 @@
     foot_note: "Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft genehmigt oder mit ihnen verbunden."
   };
 
+  // The console is prose too, so it belongs with the rest of the wording
+  // rather than hardcoded in the markup - that is exactly how it ended up
+  // reading German on an English page.
+  var CONSOLE = {
+    en: [
+      "[Launcher] Preparing instance cozy-and-pvp",
+      "[Launcher] Fabric Loader 0.19.3 for 26.2",
+      "[Launcher] 14 mods checked, all up to date",
+      "[Launcher] Signed in as Finanzinstitut",
+      "[Client]   Space Client v0.1.0 loaded",
+      "[Client]   24 modules ready — Right Shift opens the menu",
+      "[Client]   Cosmetica found, cosmetics active",
+      "[Launcher] Game started"
+    ],
+    de: [
+      "[Launcher] Instanz cozy-and-pvp wird vorbereitet",
+      "[Launcher] Fabric Loader 0.19.3 fuer 26.2",
+      "[Launcher] 14 Mods geprueft, alle aktuell",
+      "[Launcher] Angemeldet als Finanzinstitut",
+      "[Client]   Space Client v0.1.0 geladen",
+      "[Client]   24 Module bereit — Rechte Umschalttaste oeffnet das Menue",
+      "[Client]   Cosmetica gefunden, Cosmetics aktiv",
+      "[Launcher] Spiel gestartet"
+    ]
+  };
+
+  var out = document.getElementById("console-out");
+  var typingRun = 0;
+
+  function playConsole(lang) {
+    if (!out) return;
+    var lines = CONSOLE[lang] || CONSOLE.en;
+
+    // Each run gets a ticket. A run whose ticket is stale stops writing, so
+    // switching language mid-type cannot leave two typers fighting over the
+    // same element.
+    var run = ++typingRun;
+
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduced.matches) {
+      out.textContent = lines.join("\n");
+      return;
+    }
+
+    var line = 0, chr = 0;
+    out.textContent = "";
+
+    function step() {
+      if (run !== typingRun || line >= lines.length) return;
+      out.textContent = lines.slice(0, line).join("\n")
+        + (line ? "\n" : "")
+        + lines[line].slice(0, chr);
+      chr++;
+      if (chr > lines[line].length) { line++; chr = 0; setTimeout(step, 260); }
+      else setTimeout(step, 12);
+    }
+    setTimeout(step, 400);
+  }
+
   var buttons = document.querySelectorAll(".lang-btn");
 
   // The English original is kept per element, so switching back needs no
@@ -90,6 +149,7 @@
       else el.innerHTML = el.dataset.en;
     });
     document.documentElement.lang = lang;
+    playConsole(lang);
     buttons.forEach(function (b) {
       b.classList.toggle("is-on", b.dataset.lang === lang);
     });
@@ -103,5 +163,5 @@
   // A returning visitor keeps their choice; a new one gets English, as shipped.
   var saved = null;
   try { saved = localStorage.getItem("sc-lang"); } catch (e) {}
-  if (saved === "de") apply("de");
+  apply(saved === "de" ? "de" : "en");
 })();
