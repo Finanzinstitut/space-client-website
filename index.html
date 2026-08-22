@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Space Client — Minecraft-Client für 26.2</title>
+<meta name="description" content="Space Client ist ein Launcher und ein Fabric-Mod für Minecraft 26.2: 24 HUD-Module, Modrinth-Browser, mehrere Konten und eine Live-Konsole." />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- The launcher's own backdrop: two star layers and a planet, same values -->
+<div class="stars" aria-hidden="true"></div>
+<div class="stars2" aria-hidden="true"></div>
+<div class="planet-glow" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#top">
+    <img src="assets/icon.png" alt="" width="34" height="34" />
+    <span class="brand-text"><b>SPACE</b><i>CLIENT</i></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#module">Module</a>
+    <a href="#launcher">Launcher</a>
+    <a href="#cosmetics">Cosmetics</a>
+    <a class="btn primary small" href="#download">Herunterladen</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <p class="eyebrow">Minecraft 26.2 · Fabric</p>
+    <h1>Ein Client, der<br /><span class="grad">aus dem Weg geht.</span></h1>
+    <p class="lede">
+      Space Client bringt 24 HUD-Module, einen Launcher mit mehreren Konten
+      und Cosmetics über Cosmetica zusammen. Alles quelloffen, alles kostenlos.
+    </p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#download">Launcher herunterladen</a>
+      <a class="btn secondary" href="https://github.com/Finanzinstitut" target="_blank" rel="noopener">Quellcode ansehen</a>
+    </div>
+
+    <!-- Signature: the launcher's live console, the thing you actually watch
+         while an instance starts. Types itself out once, then rests. -->
+    <div class="console" role="img" aria-label="Beispielausgabe der Live-Konsole beim Start einer Instanz">
+      <div class="console-bar">
+        <span class="dot"></span>
+        <span class="console-title">Live-Konsole — cozy-and-pvp 26.2</span>
+        <span class="console-state">läuft</span>
+      </div>
+      <pre class="console-body"><code id="console-out"></code><span class="caret" aria-hidden="true"></span></pre>
+    </div>
+  </section>
+
+  <section id="module" class="section">
+    <p class="eyebrow">Im Spiel</p>
+    <h2>24 Module, einzeln schaltbar</h2>
+    <p class="section-lede">
+      Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln
+      einschalten, einstellen und im HUD frei platzieren.
+    </p>
+
+    <div class="cat">
+      <h3 class="cat-title">HUD</h3>
+      <ul class="grid">
+        <li class="card"><span>FPS</span></li>
+        <li class="card"><span>CPS</span></li>
+        <li class="card"><span>Ping</span></li>
+        <li class="card"><span>TPS</span></li>
+        <li class="card"><span>Uhr</span></li>
+        <li class="card"><span>Koordinaten</span></li>
+        <li class="card"><span>Kompass</span></li>
+        <li class="card"><span>Tempo</span></li>
+        <li class="card"><span>Sitzung</span></li>
+        <li class="card"><span>Strecke</span></li>
+        <li class="card"><span>Arbeitsspeicher</span></li>
+        <li class="card"><span>Serverinfo</span></li>
+      </ul>
+    </div>
+
+    <div class="cat">
+      <h3 class="cat-title">Kampf &amp; Eingabe</h3>
+      <ul class="grid">
+        <li class="card"><span>Tastenanzeige</span></li>
+        <li class="card"><span>Hitboxen</span></li>
+        <li class="card"><span>Trefferfarbe</span></li>
+        <li class="card"><span>Fadenkreuz-Info</span></li>
+        <li class="card"><span>Eingaberate</span></li>
+        <li class="card"><span>Mausweg</span></li>
+      </ul>
+    </div>
+
+    <div class="cat">
+      <h3 class="cat-title">Sicht &amp; Werkzeuge</h3>
+      <ul class="grid">
+        <li class="card"><span>Zoom</span></li>
+        <li class="card"><span>Chunk-Grenzen</span></li>
+        <li class="card"><span>Wehende Capes</span></li>
+        <li class="card"><span>Blickachse sperren</span></li>
+        <li class="card"><span>Koordinaten kopieren</span></li>
+        <li class="card"><span>Now Playing</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="launcher" class="section split">
+    <div>
+      <p class="eyebrow">Auf dem Desktop</p>
+      <h2>Der Launcher</h2>
+      <p class="section-lede">
+        Instanzen anlegen, Mods finden, Konten wechseln — ohne den Browser
+        zu öffnen.
+      </p>
+      <ul class="ticks">
+        <li><b>Mehrere Konten</b> über Microsoft-Anmeldung, Wechsel ohne Neustart.</li>
+        <li><b>Modrinth eingebaut</b> — suchen, installieren, Abhängigkeiten kommen mit.</li>
+        <li><b>Modpacks importieren</b> aus <code>.mrpack</code>-Dateien.</li>
+        <li><b>Jede Java-Version</b> und jeder Mod-Loader, pro Instanz einstellbar.</li>
+        <li><b>Live-Konsole</b> für jede laufende Instanz, direkt aus der Instanzliste.</li>
+        <li><b>Cosmetica vorinstallieren</b> beim Anlegen einer Instanz, ein Haken genügt.</li>
+      </ul>
+    </div>
+    <div class="panel-shot" aria-hidden="true">
+      <div class="shot-side">
+        <span class="shot-row on">Instanzen</span>
+        <span class="shot-row">Mods</span>
+        <span class="shot-row">Konto</span>
+        <span class="shot-row">Skin</span>
+        <span class="shot-row">Einstellungen</span>
+      </div>
+      <div class="shot-main">
+        <div class="shot-head">
+          <span class="shot-chip live"><i></i> Läuft (1)</span>
+          <span class="shot-chip">+ Neue Instanz</span>
+        </div>
+        <div class="shot-card"><b>cozy-and-pvp</b><small>26.2 · Fabric</small></div>
+        <div class="shot-card"><b>creative-flat</b><small>26.2 · Fabric</small></div>
+        <div class="shot-card dim"><b>vanilla-test</b><small>26.2 · Vanilla</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cosmetics" class="section">
+    <p class="eyebrow">Aussehen</p>
+    <h2>Cosmetics über Cosmetica</h2>
+    <p class="section-lede">
+      Capes, Flügel, Bandanas und Hörner kommen von
+      <a href="https://cosmetica.cc" target="_blank" rel="noopener">Cosmetica</a>,
+      erreichbar direkt aus dem Space-Client-Menü. Sie hängen an deinem
+      Cosmetica-Konto und begleiten dich auf jeden Server.
+    </p>
+    <p class="note">
+      Cosmetica ist ein eigenständiges Projekt unter der Apache-2.0-Lizenz von
+      Isaiah Meek und Mekal Covic. Space Client zeigt seine Inhalte an und
+      beansprucht sie nicht als eigene.
+    </p>
+  </section>
+
+  <section id="download" class="section download">
+    <p class="eyebrow">Loslegen</p>
+    <h2>Herunterladen</h2>
+
+    <div class="dl-grid">
+      <article class="dl-card">
+        <h3>Launcher</h3>
+        <p>Windows-Installer. Bringt Minecraft, Fabric und den Client-Mod selbst mit.</p>
+        <a class="btn primary" href="https://github.com/Finanzinstitut/space-client/releases" target="_blank" rel="noopener">Für Windows</a>
+        <p class="fineprint">Neueste Version auf GitHub Releases</p>
+      </article>
+
+      <article class="dl-card">
+        <h3>Nur der Mod</h3>
+        <p>Für alle, die schon einen Launcher haben. In den <code>mods</code>-Ordner legen.</p>
+        <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client-Mod/releases" target="_blank" rel="noopener">JAR herunterladen</a>
+        <p class="fineprint">Braucht Fabric Loader und Fabric API für 26.2</p>
+      </article>
+    </div>
+
+    <dl class="reqs">
+      <div><dt>Minecraft</dt><dd>26.2</dd></div>
+      <div><dt>Loader</dt><dd>Fabric</dd></div>
+      <div><dt>Java</dt><dd>25 oder neuer</dd></div>
+      <div><dt>Konto</dt><dd>Microsoft, gekaufte Java Edition</dd></div>
+    </dl>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-brand">
+    <img src="assets/icon.png" alt="" width="26" height="26" />
+    <span>Space Client</span>
+  </div>
+  <p class="foot-note">
+    Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft
+    genehmigt oder mit ihnen verbunden.
+  </p>
+  <nav class="foot-links">
+    <a href="https://github.com/Finanzinstitut" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://cosmetica.cc" target="_blank" rel="noopener">Cosmetica</a>
+  </nav>
+</footer>
+
+<script>
+  // The console types once on load. It is the one moving thing on the page, so
+  // it earns the attention rather than competing with anything else.
+  (function () {
+    var out = document.getElementById("console-out");
+    if (!out) return;
+
+    var lines = [
+      "[Launcher] Instanz cozy-and-pvp wird vorbereitet",
+      "[Launcher] Fabric Loader 0.19.3 fuer 26.2",
+      "[Launcher] 14 Mods geprueft, alle aktuell",
+      "[Launcher] Angemeldet als Finanzinstitut",
+      "[Client]   Space Client v0.1.0 geladen",
+      "[Client]   24 Module bereit — Rechte Umschalttaste oeffnet das Menue",
+      "[Client]   Cosmetica gefunden, Cosmetics aktiv",
+      "[Launcher] Spiel gestartet"
+    ];
+
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduced.matches) {
+      out.textContent = lines.join("\n");
+      return;
+    }
+
+    var line = 0, chr = 0;
+    function step() {
+      if (line >= lines.length) return;
+      out.textContent = lines.slice(0, line).join("\n")
+        + (line ? "\n" : "")
+        + lines[line].slice(0, chr);
+      chr++;
+      if (chr > lines[line].length) { line++; chr = 0; setTimeout(step, 260); }
+      else setTimeout(step, 12);
+    }
+    setTimeout(step, 400);
+  })();
+</script>
+
+</body>
+</html>
