@@ -62,48 +62,48 @@
     <p class="eyebrow" data-i18n="eb_ingame">In game</p>
     <h2 data-i18n="mod_h2">24 modules, each on its own switch</h2>
     <p class="section-lede">
-<span data-i18n="mod_lede">Right Shift opens the menu. Every module can be switched on, configured and placed anywhere on the HUD.</span>
+<span data-i18n="mod_lede">Right Shift opens the menu. Every module can be switched on, configured and placed anywhere on the HUD. Click one to see what it does.</span>
     </p>
 
     <div class="cat">
       <h3 class="cat-title">HUD</h3>
       <ul class="grid">
-        <li class="card"><span data-i18n="m0">FPS</span></li>
-        <li class="card"><span data-i18n="m1">CPS</span></li>
-        <li class="card"><span data-i18n="m2">Ping</span></li>
-        <li class="card"><span data-i18n="m3">TPS</span></li>
-        <li class="card"><span data-i18n="m4">Uhr</span></li>
-        <li class="card"><span data-i18n="m5">Koordinaten</span></li>
-        <li class="card"><span data-i18n="m6">Kompass</span></li>
-        <li class="card"><span data-i18n="m7">Tempo</span></li>
-        <li class="card"><span data-i18n="m8">Sitzung</span></li>
-        <li class="card"><span data-i18n="m9">Strecke</span></li>
-        <li class="card"><span data-i18n="m10">Arbeitsspeicher</span></li>
-        <li class="card"><span data-i18n="m11">Serverinfo</span></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_fps">FPS</span><span class="card-desc" data-i18n="d_fps">Shows your current frames per second</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_cps">CPS</span><span class="card-desc" data-i18n="d_cps">Shows your clicks per second</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_ping">Ping</span><span class="card-desc" data-i18n="d_ping">Shows your ping to the server</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_tps">TPS</span><span class="card-desc" data-i18n="d_tps">Estimates how fast the server is ticking</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_clock">Clock</span><span class="card-desc" data-i18n="d_clock">Displays the current real-world time</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_coords">Coordinates</span><span class="card-desc" data-i18n="d_coords">Shows your current coordinates</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_compass">Compass</span><span class="card-desc" data-i18n="d_compass">Shows your heading as a scrolling strip</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_speed">Speedometer</span><span class="card-desc" data-i18n="d_speed">Displays your speed in m/s</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_session">Session</span><span class="card-desc" data-i18n="d_session">Uptime and an optional break reminder</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_travel">Travelled</span><span class="card-desc" data-i18n="d_travel">Distance walked this session</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_memory">Memory</span><span class="card-desc" data-i18n="d_memory">Shows how much memory the game is using</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_players">Players Online</span><span class="card-desc" data-i18n="d_players">How many players are on the server</span></button></li>
       </ul>
     </div>
 
     <div class="cat">
       <h3 class="cat-title" data-i18n="cat_combat">Combat &amp; input</h3>
       <ul class="grid">
-        <li class="card"><span data-i18n="m12">Tastenanzeige</span></li>
-        <li class="card"><span data-i18n="m13">Hitboxen</span></li>
-        <li class="card"><span data-i18n="m14">Trefferfarbe</span></li>
-        <li class="card"><span data-i18n="m15">Fadenkreuz-Info</span></li>
-        <li class="card"><span data-i18n="m16">Eingaberate</span></li>
-        <li class="card"><span data-i18n="m17">Mausweg</span></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_keys">Keystrokes</span><span class="card-desc" data-i18n="d_keys">Visualise your inputs in real time</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_hitbox">Hitbox</span><span class="card-desc" data-i18n="d_hitbox">Draws entity hitboxes with per-category control</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_hitcol">Hit Colour</span><span class="card-desc" data-i18n="d_hitcol">Tints entities you hit or can reach</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_aim">Aim</span><span class="card-desc" data-i18n="d_aim">Your exact yaw and pitch</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_graph">Click Graph</span><span class="card-desc" data-i18n="d_graph">Rolling graph of your click rate</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_mouse">Mouse Tracker</span><span class="card-desc" data-i18n="d_mouse">Input overlay that visualises your mouse</span></button></li>
       </ul>
     </div>
 
     <div class="cat">
       <h3 class="cat-title" data-i18n="cat_visual">View &amp; tools</h3>
       <ul class="grid">
-        <li class="card"><span data-i18n="m18">Zoom</span></li>
-        <li class="card"><span data-i18n="m19">Chunk-Grenzen</span></li>
-        <li class="card"><span data-i18n="m20">Wehende Capes</span></li>
-        <li class="card"><span data-i18n="m21">Blickachse sperren</span></li>
-        <li class="card"><span data-i18n="m22">Koordinaten kopieren</span></li>
-        <li class="card"><span data-i18n="m23">Now Playing</span></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_zoom">Zoom</span><span class="card-desc" data-i18n="d_zoom">Hold to zoom, scroll to go further</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_chunk">Chunk</span><span class="card-desc" data-i18n="d_chunk">Chunk coordinates and position inside it</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_cape">Wavey Cape</span><span class="card-desc" data-i18n="d_cape">Makes capes move instead of hanging stiff</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_align">Align</span><span class="card-desc" data-i18n="d_align">How far your aim is off the nearest axis</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_marker">Marker</span><span class="card-desc" data-i18n="d_marker">Drop a spot and see the way back</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_music">Now Playing</span><span class="card-desc" data-i18n="d_music">Shows the track from Spotify or Amazon Music</span></button></li>
       </ul>
     </div>
   </section>
@@ -184,8 +184,8 @@
       <article class="dl-card">
         <h3>Launcher</h3>
         <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, Fabric and the client mod itself.</p>
-        <a class="btn primary" href="https://github.com/Finanzinstitut/space-client/releases" target="_blank" rel="noopener" data-i18n="dl_win">For Windows</a>
-        <p class="fineprint" data-i18n="dl_fp1">Latest version on GitHub Releases</p>
+        <a class="btn primary" href="download/Space_Client_0_1_0_x64-setup.exe" download data-i18n="dl_win">For Windows</a>
+        <p class="fineprint" data-i18n="dl_fp1">Version 0.1.0 · 64-bit installer · 4 MB</p>
       </article>
 
       <article class="dl-card">
@@ -247,17 +247,34 @@
 
     eb_ingame: "Im Spiel",
     mod_h2: "24 Module, einzeln schaltbar",
-    mod_lede: "Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln einschalten, einstellen und im HUD frei platzieren.",
+    mod_lede: "Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln einschalten, einstellen und im HUD frei platzieren. Klick eines an, um zu sehen, was es tut.",
     cat_combat: "Kampf & Eingabe",
     cat_visual: "Sicht & Werkzeuge",
 
-    m0: "FPS", m1: "CPS", m2: "Ping", m3: "TPS", m4: "Uhr", m5: "Koordinaten",
-    m6: "Kompass", m7: "Tempo", m8: "Sitzung", m9: "Strecke",
-    m10: "Arbeitsspeicher", m11: "Serverinfo",
-    m12: "Tastenanzeige", m13: "Hitboxen", m14: "Trefferfarbe",
-    m15: "Fadenkreuz-Info", m16: "Eingaberate", m17: "Mausweg",
-    m18: "Zoom", m19: "Chunk-Grenzen", m20: "Wehende Capes",
-    m21: "Blickachse sperren", m22: "Koordinaten kopieren", m23: "Now Playing",
+    n_fps: "FPS", d_fps: "Zeigt deine aktuellen Bilder pro Sekunde",
+    n_cps: "CPS", d_cps: "Zeigt deine Klicks pro Sekunde",
+    n_ping: "Ping", d_ping: "Zeigt deinen Ping zum Server",
+    n_tps: "TPS", d_tps: "Schätzt, wie schnell der Server tickt",
+    n_clock: "Uhr", d_clock: "Zeigt die echte Uhrzeit",
+    n_coords: "Koordinaten", d_coords: "Zeigt deine aktuellen Koordinaten",
+    n_compass: "Kompass", d_compass: "Zeigt deine Blickrichtung als laufendes Band",
+    n_speed: "Tempo", d_speed: "Zeigt deine Geschwindigkeit in m/s",
+    n_session: "Sitzung", d_session: "Spielzeit und optionale Pausenerinnerung",
+    n_travel: "Strecke", d_travel: "Zurückgelegte Strecke dieser Sitzung",
+    n_memory: "Arbeitsspeicher", d_memory: "Zeigt, wie viel Speicher das Spiel belegt",
+    n_players: "Spieler online", d_players: "Wie viele Spieler auf dem Server sind",
+    n_keys: "Tastenanzeige", d_keys: "Zeigt deine Eingaben in Echtzeit",
+    n_hitbox: "Hitboxen", d_hitbox: "Zeichnet Hitboxen, je Kategorie einstellbar",
+    n_hitcol: "Trefferfarbe", d_hitcol: "Färbt Ziele, die du triffst oder erreichst",
+    n_aim: "Blickwinkel", d_aim: "Deine genauen Yaw- und Pitch-Werte",
+    n_graph: "Klickverlauf", d_graph: "Laufender Graph deiner Klickrate",
+    n_mouse: "Mausweg", d_mouse: "Overlay, das deine Mausbewegung zeigt",
+    n_zoom: "Zoom", d_zoom: "Halten zum Zoomen, Scrollen für mehr",
+    n_chunk: "Chunk", d_chunk: "Chunk-Koordinaten und Position darin",
+    n_cape: "Wehende Capes", d_cape: "Lässt Capes wehen statt starr zu hängen",
+    n_align: "Ausrichtung", d_align: "Wie weit dein Blick von der Achse abweicht",
+    n_marker: "Wegpunkt", d_marker: "Punkt setzen und den Rückweg sehen",
+    n_music: "Now Playing", d_music: "Zeigt den Titel aus Spotify oder Amazon Music",
 
     eb_desktop: "Auf dem Desktop",
     lau_h2: "Der Launcher",
@@ -289,7 +306,7 @@
     dl_h2: "Herunterladen",
     dl_lau_p: "Windows-Installer. Holt Minecraft, Fabric und den Client-Mod selbst.",
     dl_win: "Für Windows",
-    dl_fp1: "Neueste Version auf GitHub Releases",
+    dl_fp1: "Version 0.1.0 · 64-Bit-Installer · 4 MB",
     dl_mod: "Nur der Mod",
     dl_mod_p: "Für alle, die schon einen Launcher haben. In den <code>mods</code>-Ordner legen.",
     dl_jar: "JAR herunterladen",
@@ -358,6 +375,20 @@
     }
     setTimeout(step, 400);
   }
+
+  // A card opens its own description and closes any other, so the grid never
+  // grows in two places at once and the row heights stay predictable.
+  document.querySelectorAll(".card").forEach(function (card) {
+    card.addEventListener("click", function () {
+      var open = card.classList.contains("is-open");
+      document.querySelectorAll(".card.is-open").forEach(function (other) {
+        other.classList.remove("is-open");
+        other.setAttribute("aria-expanded", "false");
+      });
+      card.classList.toggle("is-open", !open);
+      card.setAttribute("aria-expanded", String(!open));
+    });
+  });
 
   var buttons = document.querySelectorAll(".lang-btn");
 

@@ -294,21 +294,29 @@ code {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  align-items: start;
   gap: 10px;
 }
 .card {
   position: relative;
-  height: 74px;
+  width: 100%;
+  min-height: 74px;
   border: 1px solid var(--border);
   border-radius: 11px;
   background: #15123a;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
   transition: transform .16s ease, border-color .16s ease;
 }
-.card span {
+.card-name {
   display: block;
   width: 100%;
   padding: 6px 10px 7px;
@@ -316,16 +324,42 @@ code {
   font-size: 13px;
   font-weight: 600;
   border-top: 1px solid #221d4d;
+  transition: background .16s ease, color .16s ease;
 }
-.card:hover {
-  transform: translateY(-2px);
-  border-color: #453d80;
+
+/*
+ * Collapsed to nothing rather than hidden, so opening is a height change the
+ * eye can follow instead of a card that suddenly swaps content.
+ */
+.card-desc {
+  display: block;
+  max-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-dim);
+  background: #0e0c28;
+  transition: max-height .2s ease, opacity .16s ease, padding .2s ease;
 }
-.card:hover span {
+.card.is-open { border-color: var(--accent); }
+.card.is-open .card-desc {
+  max-height: 8em;
+  opacity: 1;
+  padding: 0 10px 10px;
+}
+.card.is-open .card-name {
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   color: #0a0820;
   border-top-color: transparent;
 }
+
+.card:hover { transform: translateY(-2px); border-color: #453d80; }
+.card:hover .card-name { background: #171341; }
+.card.is-open:hover .card-name {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.card:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 
 /* --- launcher section --- */
 
