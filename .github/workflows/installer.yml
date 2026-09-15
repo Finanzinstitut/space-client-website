@@ -69,10 +69,23 @@ jobs:
             exit 1
           }
 
-          size=$(du -h download/SpaceClient-setup.exe | cut -f1)
+          # "4.2 MB", not du's "4.2M". The unit is written out here because
+          # the page writes it out, and the last run proved what happens
+          # otherwise: du's own suffix landed in front of the "MB" that was
+          # already in the sentence, and the page advertised a 4.2M MB
+          # installer.
+          bytes=$(stat -c %s download/SpaceClient-setup.exe)
+          size=$(awk -v b="$bytes" 'BEGIN { printf "%.1f MB", b / 1048576 }')
+
           sed -i "s|id=\"dl-version\">Version [^<]*<|id=\"dl-version\">Version $version<|" index.html
-          sed -i "s|64-bit installer · [0-9.]*[KMG]\?B\?|64-bit installer · $size|" index.html
-          sed -i "s|64-Bit-Installer · [0-9.]*[KMG]\?B\?|64-Bit-Installer · $size|" index.html
+
+          # Each of the two is anchored on its own closing delimiter rather
+          # than on the shape of a size. The English copy sits in markup and
+          # ends at a tag; the German one sits in the page's own translation
+          # table and ends at a quote - so a pattern that ran to the next "<"
+          # would eat the rest of that JavaScript object.
+          sed -i "s|\(data-i18n=\"dl_fp1\">64-bit installer · \)[^<]*|\1$size|" index.html
+          sed -i "s|\(dl_fp1: \"64-Bit-Installer · \)[^\"]*|\1$size|" index.html
 
           echo "changed=yes" >> "$GITHUB_OUTPUT"
 
