@@ -1,0 +1,87 @@
+name: Keep the installer current
+
+# The download on this page used to be a copy that somebody remembered to
+# replace, and it had drifted five versions behind with a link that pointed at
+# a name no file ever had. This checks the launcher's releases and replaces the
+# copy when it is out of date, so the page cannot fall behind again.
+on:
+  schedule:
+    # Hourly. The check itself is one small request and stops there when the
+    # version already matches, so the cost of being prompt is close to nothing.
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Look up the newest launcher release
+        id: release
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/Finanzinstitut/Space-Client/releases/latest"
+          release=$(curl -sSfL -H "Accept: application/vnd.github+json" "$api")
+
+          tag=$(echo "$release" | jq -r '.tag_name')
+          # The tag has been written both "v1.2.0" and "v.1.3.0" in this
+          # project, so the dot is stripped along with the v.
+          version=$(echo "$tag" | sed -e 's/^v//' -e 's/^\.//')
+
+          # The NSIS installer, not the msi and not the updater bundle: it is
+          # the one a person double-clicks.
+          url=$(echo "$release" | jq -r '
+            .assets[]
+            | select(.name | ascii_downcase | endswith("setup.exe"))
+            | .browser_download_url' | head -1)
+
+          if [ -z "$url" ] || [ "$url" = "null" ]; then
+            echo "That release carries no setup installer - nothing to copy." >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Replace the copy if it is behind
+        id: work
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          current=$(sed -n 's/.*id="dl-version">Version \([^<]*\)<.*/\1/p' index.html | head -1)
+
+          if [ "$current" = "$version" ]; then
+            echo "Already on $version."
+            echo "changed=no" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          curl -sSfL -o download/SpaceClient-setup.exe "${{ steps.release.outputs.url }}"
+
+          # Refuse anything that is not actually a Windows binary rather than
+          # committing an error page under an .exe name.
+          head -c 2 download/SpaceClient-setup.exe | grep -q "MZ" || {
+            echo "What came back is not a Windows executable." >&2
+            exit 1
+          }
+
+          size=$(du -h download/SpaceClient-setup.exe | cut -f1)
+          sed -i "s|id=\"dl-version\">Version [^<]*<|id=\"dl-version\">Version $version<|" index.html
+          sed -i "s|64-bit installer · [0-9.]*[KMG]\?B\?|64-bit installer · $size|" index.html
+          sed -i "s|64-Bit-Installer · [0-9.]*[KMG]\?B\?|64-Bit-Installer · $size|" index.html
+
+          echo "changed=yes" >> "$GITHUB_OUTPUT"
+
+      - name: Commit
+        if: steps.work.outputs.changed == 'yes'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add download/SpaceClient-setup.exe index.html
+          git commit -m "Installer auf ${{ steps.release.outputs.version }}"
+          git push
