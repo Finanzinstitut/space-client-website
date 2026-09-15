@@ -476,5 +476,47 @@
 
 </script>
 
+<script>
+/*
+ * Reveal on scroll.
+ *
+ * The hidden state is switched on from here rather than being in the
+ * stylesheet, and that ordering is the whole safety of it: a reader whose
+ * JavaScript never runs - or whose browser has no IntersectionObserver - never
+ * gets the class, so they get the finished page instead of a blank one. A
+ * stylesheet cannot make that promise, because it cannot tell whether anything
+ * is ever going to reveal what it hid.
+ */
+(function () {
+  if (!("IntersectionObserver" in window)) return;
+
+  var items = document.querySelectorAll(".hero > *, .section");
+  if (!items.length) return;
+
+  document.body.classList.add("reveal");
+
+  var seen = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-in");
+      // Once is enough. A block that fades out again as you scroll back up is
+      // a block you have to wait for twice.
+      seen.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
+
+  items.forEach(function (el) { seen.observe(el); });
+
+  // Anything already on screen at load should not wait for a scroll that may
+  // never come, on a short page or a tall window.
+  requestAnimationFrame(function () {
+    items.forEach(function (el) {
+      var box = el.getBoundingClientRect();
+      if (box.top < window.innerHeight) el.classList.add("is-in");
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
