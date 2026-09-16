@@ -283,3 +283,11 @@ select.rank { width: auto; min-width: 118px; flex: 0 0 auto; }
   select.rank { flex: 1; }
   .add { flex-direction: column; align-items: stretch; }
 }
+
+/* Das Rang-Zeichen in der Zeile. Pixelgenau vergroessert, nicht geglaettet -
+   es ist ein 8x8-Bild, und weichgezeichnet sieht es aus wie ein Fehler. */
+.mark {
+  width: 24px; height: 24px;
+  flex: 0 0 24px;
+  image-rendering: pixelated;
+}
