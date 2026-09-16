@@ -20,6 +20,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Die Stylesheets der Demo nachziehen
+        id: demo
+        run: |
+          set -euo pipefail
+          # Die Demo zeigt den Launcher, nicht einen Nachbau davon - also
+          # kommen ihre beiden Stylesheets aus dem Launcher-Repository und
+          # nicht aus dieser Hand. Ein Nachbau sieht am Tag, an dem er
+          # entsteht, gleich aus und danach nie wieder.
+          raw="https://raw.githubusercontent.com/Finanzinstitut/Space-Client/main/src"
+          changed=no
+          for pair in "style.css launcher.css" "motion.css motion.css"; do
+            set -- $pair
+            curl -sSfL "$raw/$1" -o "/tmp/$2"
+            # Eine Antwort, die kein Stylesheet ist, waere sonst eine
+            # Fehlerseite unter einem .css-Namen, und die Demo waere weiss.
+            if [ ! -s "/tmp/$2" ] || ! head -c 400 "/tmp/$2" | grep -q "{"; then
+              echo "$1 kam nicht als Stylesheet zurueck." >&2
+              exit 1
+            fi
+            if ! cmp -s "/tmp/$2" "demo/$2"; then
+              cp "/tmp/$2" "demo/$2"
+              changed=yes
+            fi
+          done
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Die Stylesheets festschreiben
+        if: steps.demo.outputs.changed == 'yes'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo/launcher.css demo/motion.css
+          git commit -m "Demo folgt dem Launcher"
+          git pull --rebase origin main
+          git push
+
       - name: Look up the newest launcher release
         id: release
         run: |

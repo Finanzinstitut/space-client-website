@@ -1,0 +1,1470 @@
+/*
+ * Space Client — launcher
+ *
+ * Rebuilt to match the in-game menu rather than the other way round. The old
+ * sheet was violet on navy with a drifting starfield and a planet glowing in
+ * the corner, and every surface was a rectangle with a one-pixel border. That
+ * look was decided when the launcher was the only thing there was; now there
+ * is a client menu sitting on top of a game, and a tinted, twinkling window
+ * beside it reads as two different products.
+ *
+ * So: black surfaces, near-white ink, one accent used sparingly, and a corner
+ * radius on everything. Nothing here is a rectangle.
+ *
+ * Three rules the whole sheet follows.
+ *
+ * Depth comes from shadow, not from outline. A border says "this is where the
+ * box ends"; a shadow says "this is lying on top of that". Borders survive
+ * only as hairlines at 6% white, which is enough to separate two dark
+ * surfaces without drawing a frame around either.
+ *
+ * The accent is near-white, not a hue. In a black interface the thing that
+ * reads as active is the thing that is brighter - and a coloured highlight on
+ * every selected row is exactly what made the old design look tinted all the
+ * way through.
+ *
+ * Colour is reserved for meaning. Green is running, red is destructive, amber
+ * is a warning. Nothing decorative gets a colour, so when something is
+ * coloured it means something.
+ */
+
+:root {
+  /* --- surfaces, darkest to lightest --- */
+  --bg-deep: #000000;
+  --bg-mid: #08080a;
+  --bg-panel: #0b0b0d;
+  --surface: #121214;
+  --surface-hi: #1b1b1f;
+  --chip: #1e1e22;
+  --chip-hi: #2a2a30;
+
+  /* --- ink --- */
+  --text: #f3f3f6;
+  --text-dim: #97979f;
+  --text-off: #5c5c66;
+
+  /*
+   * The accent. Near-white on purpose - see the note at the top. The -soft
+   * variant is for a fill behind text, where full brightness would leave the
+   * text with nothing to sit against.
+   */
+  --accent: #e9e9ef;
+  --accent-soft: #2e2e34;
+  --on-accent: #08080a;
+
+  /* --- meaning --- */
+  --success: #4ade80;
+  --danger: #ff6b6b;
+  --warn: #f5c451;
+
+  /* --- lines --- */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hi: rgba(255, 255, 255, 0.14);
+
+  /* --- shape --- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* --- depth --- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.7);
+
+  --sidebar-w: 232px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * The old backdrop, switched off rather than deleted.
+ *
+ * The three elements are still in the markup and still referenced from the
+ * motion sheet, so removing them would mean editing three files to delete
+ * something nobody can see. What replaces them is one very soft wash in the
+ * top corner - enough that the window is not a flat black rectangle, far short
+ * of a light source.
+ */
+.stars, .stars2 { display: none; }
+
+.planet-glow {
+  position: fixed;
+  top: -340px; right: -280px;
+  width: 720px; height: 720px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.045), transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100vh;
+}
+
+/* ============================ sidebar ============================ */
+
+.sidebar {
+  width: var(--sidebar-w);
+  flex: 0 0 var(--sidebar-w);
+  background: var(--bg-mid);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px 14px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 650;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 2px 6px 20px;
+  color: var(--text);
+}
+
+.logo-orb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  flex: 0 0 22px;
+  /* A planet with its light on one side, the same shape the mod's icon draws */
+  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #cfcfd8 28%, #46464e 70%, #1a1a1e 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /*
+   * The travelling marker. One bar that slides between entries rather than a
+   * light going out as another comes on - a single indicator moving reads as
+   * navigation; two fading in opposite directions reads as two lights.
+   * Positioned from script on ::before of the nav itself.
+   */
+  position: relative;
+}
+
+.sidebar nav::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 16px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transform: translateY(var(--nav-mark, 0));
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms;
+  opacity: var(--nav-mark-shown, 0);
+  pointer-events: none;
+}
+
+.nav-group {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  padding: 16px 10px 6px;
+}
+.nav-group:first-of-type { padding-top: 2px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms, color 160ms, transform 160ms;
+}
+
+.nav-item svg { width: 16px; height: 16px; flex: 0 0 16px; opacity: 0.75; transition: opacity 160ms; }
+
+.nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text); }
+.nav-item:hover svg { opacity: 1; }
+.nav-item:hover { transform: translateX(2px); }
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text);
+  font-weight: 550;
+}
+.nav-item.active svg { opacity: 1; }
+
+.account-chip {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms;
+  overflow: hidden;
+}
+.account-chip:hover { background: var(--surface-hi); border-color: var(--border-hi); }
+.account-chip #account-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex: 0 0 7px;
+  background: var(--text-off);
+}
+.dot.online { background: var(--success); box-shadow: 0 0 8px rgba(74, 222, 128, 0.7); }
+.dot.offline { background: var(--warn); }
+
+.sidebar-footer {
+  padding: 12px 12px 2px;
+  font-size: 11px;
+  color: var(--text-off);
+}
+
+/* ============================ content ============================ */
+
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 30px 34px 44px;
+  background:
+    radial-gradient(1100px 520px at 78% -12%, rgba(255, 255, 255, 0.035), transparent 70%),
+    var(--bg-deep);
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+
+.section-title {
+  margin: 0 0 3px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0 0 20px;
+  color: var(--text-dim);
+  font-size: 13px;
+  max-width: 60ch;
+  line-height: 1.55;
+}
+
+.head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 34px 0 16px;
+}
+.head-row .subtitle { margin: 0; }
+.head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+.hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-off);
+  line-height: 1.5;
+}
+
+.cat-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  margin: 14px 0 8px;
+}
+
+.status-line {
+  font-size: 12px;
+  color: var(--text-dim);
+  min-height: 16px;
+  margin-top: 10px;
+}
+.status-line.warn { color: var(--warn); }
+.status-line.danger { color: var(--danger); }
+.status-line.done { color: var(--success); }
+
+/* ============================ hero ============================ */
+
+.hero {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+  padding: 30px 34px;
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg-panel) 100%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-figure {
+  width: 168px;
+  height: 232px;
+  flex: 0 0 168px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  /* A pool of light under the figure, so it stands on something */
+  background: radial-gradient(ellipse at 50% 82%, rgba(255, 255, 255, 0.05), transparent 52%);
+}
+.hero-figure canvas { max-width: 100%; max-height: 100%; }
+
+.hero-main { flex: 1; min-width: 0; }
+
+.hero-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  margin-bottom: 6px;
+}
+
+.hero-name {
+  margin: 0 0 18px;
+  font-size: 34px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.hero-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  margin-bottom: 7px;
+}
+
+.hero-select {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 10px;
+}
+
+.hero-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+
+.hero-note { margin-top: 10px; font-size: 12px; color: var(--text-off); }
+
+/*
+ * Play. The one button the launcher exists for, so it is the only thing that
+ * takes the full accent - which is also why nothing else does.
+ */
+.play-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  max-width: 420px;
+  padding: 15px 26px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.09);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms, filter 180ms;
+}
+.play-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(255, 255, 255, 0.16); }
+.play-btn:active { transform: translateY(0); }
+.play-btn:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+
+.play-glyph { font-size: 11px; }
+
+/* ============================ cards ============================ */
+
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+}
+.card.wide { width: 100%; }
+
+.field { margin-bottom: 18px; }
+.field:last-child { margin-bottom: 0; }
+
+.field > label,
+.field > .row > label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  margin-bottom: 7px;
+}
+
+.row { display: flex; align-items: center; gap: 8px; }
+.row.space-between { justify-content: space-between; }
+.row.actions { margin-top: 20px; justify-content: flex-end; }
+.grow { flex: 1; min-width: 0; }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-off);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ============================ inputs ============================ */
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 13px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 160ms, background 160ms, box-shadow 160ms;
+}
+
+input::placeholder { color: var(--text-off); }
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border-color: var(--border-hi);
+  background: var(--surface-hi);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+input[readonly] { color: var(--text-dim); cursor: default; }
+
+select {
+  appearance: none;
+  /* The chevron, drawn rather than shipped - one less file and it takes the
+     text colour without a second rule */
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
+                    linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+  cursor: pointer;
+}
+select option { background: var(--surface); color: var(--text); }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--chip);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 140ms;
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.15); }
+
+/*
+ * Written with .field in front because a checkbox row is a <label> inside a
+ * .field, and .field > label is the small-caps section heading. Same
+ * specificity, so the later rule would not have won on its own - and every
+ * checkbox in the settings came out as a grey uppercase heading.
+ */
+/*
+ * label.check-row is in the list because the create dialog spells two of its
+ * checkboxes that way rather than as label.checkbox. Both mean the same thing
+ * and both were coming out as grey uppercase headings.
+ */
+.field > label.checkbox,
+.field > label.check-row,
+.field label.checkbox,
+.checkbox, .check-row label.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.check-row { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+
+/* The number that belongs to a slider, on its own line under it. */
+#ram-value, #new-ram-value, #edit-ram-value {
+  display: block;
+  margin-top: 9px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--text);
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 17px; height: 17px;
+  flex: 0 0 17px;
+  border-radius: 5px;
+  border: 1px solid var(--border-hi);
+  background: var(--surface);
+  cursor: pointer;
+  position: relative;
+  transition: background 140ms, border-color 140ms;
+}
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px; top: 1px;
+  width: 4px; height: 9px;
+  border: solid var(--on-accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(42deg);
+}
+
+.small-check { font-size: 12px; margin-bottom: 0; }
+
+/* ============================ buttons ============================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 17px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms, border-color 160ms, color 160ms, transform 160ms;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn.primary:hover:not(:disabled) { background: #ffffff; }
+
+.btn.secondary {
+  background: var(--chip);
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn.secondary:hover:not(:disabled) { background: var(--chip-hi); border-color: var(--border-hi); }
+
+.btn.danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+.btn.danger:hover:not(:disabled) { background: rgba(255, 107, 107, 0.12); border-color: rgba(255, 107, 107, 0.5); }
+
+.btn.small { padding: 6px 13px; font-size: 12px; }
+.btn.big { padding: 12px 24px; font-size: 14px; }
+
+/*
+ * Written as .btn.icon-btn because these are always spelled
+ * "btn icon-btn small" in the script, and .btn.small sets a padding that a
+ * single class cannot outrank - which squashed a 34px square down onto an
+ * eight pixel glyph.
+ */
+.btn.icon-btn, .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--chip);
+  color: var(--text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 160ms, color 160ms, border-color 160ms;
+}
+.btn.icon-btn { padding: 0; }
+.icon-btn svg { width: 15px; height: 15px; }
+.icon-btn:hover { background: var(--chip-hi); color: var(--text); border-color: var(--border-hi); }
+
+.run-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+}
+
+/* ============================ chips, tabs, segmented ============================ */
+
+.tag, .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  background: var(--chip);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge.has-update { background: rgba(245, 196, 81, 0.15); color: var(--warn); }
+.badge.changed { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip {
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: var(--chip);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.chip:hover { background: var(--chip-hi); color: var(--text); }
+.chip.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+/*
+ * The segmented controls: tabs, the mod source, the project type.
+ *
+ * One shape for all three, because they are one idea - a small set of choices
+ * where exactly one is on. They used to be three different-looking rows, which
+ * is how a click landed on the wrong one.
+ */
+.tab-row, .type-row {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  margin-bottom: 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.tab, .type-btn, .source-btn {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 170ms, color 170ms;
+}
+.tab:hover, .type-btn:hover, .source-btn:hover { color: var(--text); }
+
+.tab.active, .type-btn.active, .source-btn.active {
+  background: var(--chip-hi);
+  color: var(--text);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============================ instances ============================ */
+
+.instance-list { display: flex; flex-direction: column; gap: 9px; }
+
+.instance-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 18px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: background 180ms, border-color 180ms, transform 180ms, box-shadow 180ms;
+}
+.instance-card:hover {
+  background: var(--surface-hi);
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.instance-card.is-selected { border-color: rgba(255, 255, 255, 0.28); }
+.instance-card.game-running { border-color: rgba(74, 222, 128, 0.35); }
+
+.instance-orb {
+  width: 34px; height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #b9b9c4 26%, #3c3c44 68%, #17171a 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/*
+ * The orb lives inside .instance-main, not beside it - so this is the row,
+ * and the card is only the frame around it. Getting that the wrong way round
+ * stacked the planet on top of the name.
+ */
+.instance-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.instance-main > div:last-child { flex: 1; min-width: 0; }
+.instance-name { font-size: 14.5px; font-weight: 600; margin-bottom: 6px; }
+.instance-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+.instance-path {
+  font-size: 11px;
+  color: var(--text-off);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.instance-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.running-strip {
+  margin: 16px 0;
+  padding: 15px 18px;
+  border-radius: var(--r-lg);
+  background: rgba(74, 222, 128, 0.06);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+.running-head {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--success);
+  margin-bottom: 10px;
+}
+.running-list { display: flex; flex-direction: column; gap: 7px; }
+.running-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.running-name { font-weight: 550; }
+.running-version { color: var(--text-off); font-size: 12px; }
+.running-open { margin-left: auto; }
+
+.import-area { margin: 14px 0; }
+.import-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 34px 22px;
+  border-radius: var(--r-lg);
+  border: 1.5px dashed var(--border-hi);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 170ms, background 170ms, color 170ms;
+}
+.drop-zone:hover, .drop-zone.active {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: var(--surface-hi);
+  color: var(--text);
+}
+.drop-zone span:first-child { font-size: 22px; }
+
+/* ============================ mods, versions ============================ */
+
+.mod-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+
+.mod-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 15px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: background 170ms, border-color 170ms, transform 170ms;
+}
+.mod-card:hover { background: var(--surface-hi); border-color: var(--border-hi); transform: translateX(2px); }
+.mod-card.is-disabled { opacity: 0.5; }
+
+.mod-icon {
+  width: 42px; height: 42px;
+  flex: 0 0 42px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--chip);
+}
+.mod-body { flex: 1; min-width: 0; }
+.mod-title { font-size: 13.5px; font-weight: 600; margin-bottom: 3px; }
+.mod-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mod-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.mod-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.version-project {
+  padding: 12px 15px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+.version-list { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow-y: auto; }
+.version-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 13px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: background 150ms;
+}
+.version-row:hover { background: var(--surface-hi); }
+.version-name { font-weight: 550; font-size: 13px; }
+.version-meta { font-size: 11.5px; color: var(--text-off); }
+.version-info { flex: 1; min-width: 0; }
+.vtype { font-size: 11px; color: var(--text-dim); }
+
+.empty, .placeholder {
+  padding: 34px 20px;
+  text-align: center;
+  color: var(--text-off);
+  font-size: 13px;
+}
+.empty-note { font-size: 12px; color: var(--text-off); margin-top: 6px; }
+
+/* ============================ skin ============================ */
+
+.skin-layout { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+
+.skin-preview-card { flex: 0 0 268px; }
+
+.skin-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 292px;
+  margin: 10px 0;
+  border-radius: var(--r-lg);
+  background: radial-gradient(ellipse at 50% 74%, rgba(255, 255, 255, 0.07), transparent 62%), var(--bg-deep);
+  cursor: grab;
+}
+.skin-preview:active { cursor: grabbing; }
+.skin-name { text-align: center; font-size: 13px; font-weight: 550; }
+
+.skin-drop { padding: 24px 18px; margin-bottom: 18px; }
+
+.skin-library, .cape-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 9px;
+  margin-top: 9px;
+}
+
+.skin-item, .cape-item {
+  position: relative;
+  padding: 9px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms, transform 160ms;
+}
+.skin-item:hover, .cape-item:hover {
+  background: var(--surface-hi);
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+}
+.skin-item.active, .cape-item.active { border-color: rgba(255, 255, 255, 0.34); }
+
+.skin-thumb, .cape-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border-radius: var(--r-sm);
+  background: var(--bg-deep);
+}
+.skin-item span, .cape-item span {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skin-item-apply, .skin-item-remove { margin-top: 6px; }
+
+/*
+ * An empty-state note is a grid item like any other, so without this it gets
+ * one 84px column and its sentence comes out as a narrow ribbon of single
+ * words. Spanning the whole row is what it means.
+ */
+.skin-library > .empty-note,
+.cape-list > .empty-note {
+  grid-column: 1 / -1;
+  align-self: center;
+  margin: 0;
+}
+
+/* The preview card's heading is a bare label, not one inside a .field. */
+.skin-preview-card > label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+}
+
+/* ============================ account ============================ */
+
+.account-list { display: flex; flex-direction: column; gap: 8px; }
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 15px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: background 160ms, border-color 160ms;
+}
+.account-row:hover { background: var(--surface-hi); }
+.account-row.active { border-color: rgba(255, 255, 255, 0.3); }
+
+.account-avatar {
+  width: 40px; height: 40px;
+  flex: 0 0 40px;
+  border-radius: var(--r-sm);
+  image-rendering: pixelated;
+  background: var(--chip);
+}
+.account-name-row { flex: 1; min-width: 0; font-weight: 550; }
+.account-actions { display: flex; gap: 6px; }
+
+.offline-box {
+  padding: 16px 18px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.offline-box strong { display: block; margin-bottom: 4px; }
+
+.login-flow { margin-top: 14px; }
+
+.code-box {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: var(--r-md);
+  background: var(--chip);
+  border: 1px solid var(--border-hi);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  user-select: all;
+}
+
+/* ============================ notices ============================ */
+
+.warning-box, .compat-note {
+  padding: 13px 16px;
+  border-radius: var(--r-md);
+  background: rgba(245, 196, 81, 0.08);
+  border: 1px solid rgba(245, 196, 81, 0.25);
+  color: var(--warn);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.warning-box.danger, .compat-note.danger {
+  background: rgba(255, 107, 107, 0.08);
+  border-color: rgba(255, 107, 107, 0.25);
+  color: var(--danger);
+}
+
+.update-banner {
+  position: fixed;
+  right: 22px; bottom: 22px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 460px;
+  padding: 16px 20px;
+  border-radius: var(--r-lg);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  box-shadow: var(--shadow-lg);
+}
+.update-banner #update-text { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
+
+/* ============================ modals ============================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.modal {
+  width: min(540px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 26px;
+  border-radius: var(--r-xl);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  box-shadow: var(--shadow-lg);
+}
+.modal h2 { margin-bottom: 20px; }
+
+/* ============================ console ============================ */
+
+.console-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.console-window {
+  display: flex;
+  flex-direction: column;
+  width: min(1020px, 100%);
+  height: min(730px, 100%);
+  border-radius: var(--r-xl);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-mid);
+}
+.console-instance { margin-left: 9px; font-size: 12px; color: var(--text-off); }
+.console-actions { display: flex; align-items: center; gap: 7px; }
+
+.console-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 20px;
+  background: var(--bg-deep);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.console-line { white-space: pre-wrap; word-break: break-word; color: var(--text-dim); }
+.console-line.warn { color: var(--warn); }
+.console-line.danger { color: var(--danger); }
+
+/* ============================ crash report ============================ */
+
+.crash-report {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 107, 107, 0.05);
+  max-height: 42%;
+  overflow-y: auto;
+}
+.crash-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.crash-close { margin-left: auto; }
+.crash-item {
+  padding: 11px 13px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.crash-msg { font-weight: 550; font-size: 13px; margin-bottom: 4px; }
+.crash-fix { font-size: 12.5px; color: var(--text-dim); }
+.crash-source, .crash-note, .crash-info { font-size: 11.5px; color: var(--text-off); margin-top: 4px; }
+.crash-excerpt {
+  margin-top: 8px;
+  padding: 9px 11px;
+  border-radius: var(--r-sm);
+  background: var(--bg-deep);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.crash-link { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.crash-busy { color: var(--text-off); font-size: 12.5px; }
+
+/* ============================ progress ============================ */
+
+.progress-wrap { margin: 12px 0; }
+.progress-label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+.progress-bar {
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--chip);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.progress-fill.waiting {
+  width: 34% !important;
+  animation: progress-sweep 1.3s ease-in-out infinite;
+}
+@keyframes progress-sweep {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(330%); }
+}
+
+/* ============================ intro ============================ */
+
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--bg-deep);
+}
+
+.intro-orb {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #cfcfd8 26%, #46464e 68%, #141418 100%);
+  box-shadow: 0 0 44px rgba(255, 255, 255, 0.14);
+}
+.intro-greeting { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+.intro-clock { font-size: 13px; color: var(--text-dim); }
+.intro-step { font-size: 12px; color: var(--text-off); }
+
+/* ============================ scrollbars ============================ */
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.11);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); background-clip: content-box; }
+
+/* ============================ utility ============================ */
+
+.hidden { display: none !important; }
+
+/* ============================ Pakete in der Leiste ============================ */
+
+/*
+ * Kleiner als die Eintraege darueber, und eingerueckt: das sind Griffe, keine
+ * Orte. Eine Leiste, in der alles gleich schwer wiegt, sieht aus, als haette
+ * der Client zehn Seiten.
+ */
+.nav-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0 2px;
+  padding-left: 10px;
+}
+
+.nav-extra {
+  position: relative;
+  padding: 7px 10px 7px 14px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-off);
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms, color 160ms;
+}
+
+/* Ein Strich am Anfang, damit die drei als eine Gruppe lesbar sind. */
+.nav-extra::before {
+  content: "";
+  position: absolute;
+  left: 4px; top: 50%;
+  width: 3px; height: 3px;
+  margin-top: -1px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.nav-extra:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-dim); }
+
+/* Ausgegraut, aber anklickbar: der Klick sagt, warum es noch nicht geht. */
+.nav-extra.is-off { opacity: 0.45; }
+.nav-extra.is-off:hover { color: var(--text-off); }
+
+/* ============================ Paket-Fenster ============================ */
+
+.bundle-text { margin: 0 0 14px; color: var(--text-dim); font-size: 13.5px; line-height: 1.55; }
+
+.bundle-warning {
+  margin: 0 0 16px;
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  background: rgba(255, 107, 107, 0.09);
+  border: 1px solid rgba(255, 107, 107, 0.28);
+  color: var(--danger);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.bundle-credits { margin: 14px 0 0; font-size: 12px; color: var(--text-off); }
+
+.bundle-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bundle-list li {
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* Das Ergebnis je Zeile, nachdem installiert wurde. */
+.bundle-list li.bundle-installed { color: var(--success); border-color: rgba(74, 222, 128, 0.28); }
+.bundle-list li.bundle-incompatible { color: var(--warn); border-color: rgba(245, 196, 81, 0.28); }
+.bundle-list li.bundle-failed { color: var(--danger); border-color: rgba(255, 107, 107, 0.28); }
+
+/* ============================ Einstellungen als Zeilen ============================ */
+
+/*
+ * Dieselbe Anatomie wie im Spielmenue: die Zeile ist die Flaeche, links Name
+ * und Erklaerung uebereinander, rechts das Bedienelement. Vorher stand ueber
+ * jedem Feld eine Grossbuchstaben-Ueberschrift und darunter ein grauer
+ * Hinweis - drei Zeilen fuer eine Entscheidung, und die Erklaerung so weit
+ * vom Schalter entfernt, dass sie zu einer eigenen Sache wurde.
+ */
+
+.set-group { margin-bottom: 26px; }
+
+.set-head {
+  margin: 0 0 8px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-off);
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 16px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background: rgba(15, 15, 18, 0.8);
+  border: 1px solid transparent;
+  transition: background 170ms, border-color 170ms;
+}
+.set-row:hover { background: #1c1c20; border-color: var(--border); }
+.set-row:last-child { margin-bottom: 0; }
+
+.set-text { flex: 1; min-width: 0; }
+
+.set-name { font-size: 13.5px; font-weight: 550; color: var(--text); }
+
+.set-desc {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+/* Der Update-Status sitzt in der Beschreibungszeile und darf nicht springen. */
+.set-desc.status-line { min-height: 0; margin-top: 2px; }
+
+.set-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.set-control.wide { flex: 0 1 300px; min-width: 0; }
+.set-control.wide input { flex: 1; min-width: 0; }
+
+.set-control input[type="range"] { width: 170px; }
+.set-control input[type="number"] { width: 84px; }
+.set-control select { width: auto; min-width: 150px; }
+
+.set-value {
+  min-width: 62px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--text);
+}
+
+/*
+ * Der Schalter, Zug fuer Zug wie der im Spielmenue: 30 breit, 14 hoch, der
+ * Knopf 10 mit zwei Pixeln Luft, und die Spur wird zum Akzent, waehrend er
+ * hinuebergleitet - Farbe und Ort sagen dasselbe, ein Blick auf eins von
+ * beiden reicht.
+ */
+input[type="checkbox"].switch {
+  appearance: none;
+  position: relative;
+  width: 34px; height: 18px;
+  flex: 0 0 34px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: #232327;
+  cursor: pointer;
+  transition: background 200ms;
+}
+input[type="checkbox"].switch::after {
+  content: "";
+  position: absolute;
+  left: 2px; top: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #6e679a;
+  transition: transform 240ms cubic-bezier(0.65, 0, 0.35, 1), background 200ms;
+}
+input[type="checkbox"].switch:checked { background: var(--accent); }
+input[type="checkbox"].switch:checked::after {
+  transform: translateX(16px);
+  background: var(--on-accent);
+}
+/* Das Haekchen der gewoehnlichen Kaestchen gehoert hier nicht hin. */
+input[type="checkbox"].switch:checked::before { content: none; }
+
+.set-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.set-bar .status-line { margin: 0; }
+
+@media (max-width: 720px) {
+  .set-row { flex-wrap: wrap; gap: 12px; }
+  .set-control.wide { flex: 1 1 100%; }
+}
