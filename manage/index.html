@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Space Client — Ränge</title>
+
+<!--
+  Kein Skript und kein Stil steht in dieser Datei.
+
+  Das ist der Grund für die Regel unten: script-src 'self' erlaubt nur Dateien
+  aus diesem Ordner, und damit gibt es keinen Weg, von aussen Code in diese
+  Seite zu bekommen. Stünde hier ein <script>, müsste die Regel 'unsafe-inline'
+  erlauben - und dann wäre sie ihr Geld nicht wert, denn genau das ist der Weg,
+  auf dem ein eingeschleustes Skript an den Token käme.
+
+  connect-src zählt jede Adresse auf, mit der diese Seite reden darf. Es sind
+  zwei: GitHub, wo die Liste liegt, und Mojang, wo ein Name zu einer UUID wird.
+  Nirgendwo sonst hin kann der Token gehen, auch nicht versehentlich.
+-->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  script-src 'self';
+  style-src 'self';
+  connect-src https://api.github.com https://api.mojang.com;
+  img-src 'self' data:;
+  base-uri 'none';
+  form-action 'none'" />
+
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="shell">
+
+  <header class="head">
+    <div>
+      <p class="eyebrow">Space Client</p>
+      <h1>Ränge</h1>
+    </div>
+    <button type="button" id="signout" class="btn ghost hidden">Token vergessen</button>
+  </header>
+
+  <!-- ===================== Anmeldung ===================== -->
+  <section id="gate" class="card">
+    <h2>Zugang</h2>
+    <p class="lede">
+      Diese Seite hat kein eigenes Passwort und könnte auch keins haben — sie ist
+      eine Datei, die jeder herunterladen kann. Was sie schützt, ist GitHub: ohne
+      gültigen Token lehnt GitHub jede Änderung ab, ganz gleich, was hier
+      eingetippt wird.
+    </p>
+
+    <ol class="steps">
+      <li>
+        Auf GitHub einen <b>fine-grained token</b> anlegen:
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">
+          Einstellungen → Developer settings → Fine-grained tokens</a>
+      </li>
+      <li><b>Repository access:</b> nur <code>Finanzinstitut/Space-Client-Mod</code></li>
+      <li><b>Permissions → Contents:</b> <code>Read and write</code>. Sonst nichts.</li>
+      <li><b>Expiration:</b> ein Datum setzen. Ein Token, der nie abläuft, ist einer, den man nie zurücknimmt.</li>
+    </ol>
+
+    <label class="field">
+      <span>Token</span>
+      <input type="password" id="token" autocomplete="off" spellcheck="false"
+             placeholder="github_pat_..." />
+    </label>
+
+    <label class="check">
+      <input type="checkbox" id="remember" checked />
+      <span>Auf diesem Gerät merken</span>
+    </label>
+
+    <div class="row">
+      <button type="button" id="connect" class="btn primary">Verbinden</button>
+    </div>
+
+    <p class="note" id="gate-note"></p>
+  </section>
+
+  <!-- ===================== Liste ===================== -->
+  <section id="editor" class="card hidden">
+    <div class="card-head">
+      <h2>Wer trägt welches Zeichen</h2>
+      <span class="pill" id="count"></span>
+    </div>
+
+    <div class="table" id="rows"></div>
+    <p class="empty hidden" id="empty">Noch niemand auf der Liste.</p>
+
+    <div class="add">
+      <label class="field grow">
+        <span>Minecraft-Name</span>
+        <input type="text" id="new-name" spellcheck="false" placeholder="Finanzinstitut" />
+      </label>
+      <label class="field">
+        <span>Rang</span>
+        <select id="new-rank">
+          <option value="owner">Owner</option>
+          <option value="dev">Dev</option>
+          <option value="vip">VIP</option>
+          <option value="standard">Standard</option>
+        </select>
+      </label>
+      <button type="button" id="add" class="btn">Hinzufügen</button>
+    </div>
+
+    <div class="bar">
+      <button type="button" id="save" class="btn primary">Speichern</button>
+      <button type="button" id="reload" class="btn ghost">Neu laden</button>
+      <span class="status" id="status"></span>
+    </div>
+
+    <p class="note">
+      Gespeichert wird als Commit auf <code>main</code> im Mod-Repository. Der
+      Client liest die Liste einmal pro halbe Minute neu und ausserdem sofort
+      beim Betreten einer Welt — im Spiel ist die Änderung also spätestens nach
+      dreissig Sekunden da.
+    </p>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
