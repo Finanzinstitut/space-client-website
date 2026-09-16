@@ -1,0 +1,6 @@
+# Die Verwaltungsseite gehoert nicht in eine Suchmaschine. Das ist
+# Ordnung, keine Sicherheit: wer die Adresse kennt, kommt trotzdem hin,
+# und genau darum liegt der Schutz dort bei GitHub und nicht bei dieser
+# Zeile. Ohne gueltigen Token kann die Seite nichts.
+User-agent: *
+Disallow: /manage/
