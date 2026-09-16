@@ -22,8 +22,19 @@ const REPO = "Space-Client-Mod";
 const PATH = "src/main/resources/assets/spaceclient/badges.json";
 const BRANCH = "main";
 
-const RANKS = ["owner", "dev", "vip", "standard"];
-const RANK_LABEL = { owner: "Owner", dev: "Dev", vip: "VIP", standard: "Standard" };
+/*
+ * Muss zu Badges.Rank im Mod passen. Steht hier noch einmal, weil diese Seite
+ * die Java-Datei nicht lesen kann - wer einen Rang hinzufuegt, aendert beide.
+ */
+const RANKS = [
+  "owner", "dev", "mod", "vip", "partner",
+  "creator", "supporter", "tester", "og", "standard",
+];
+const RANK_LABEL = {
+  owner: "Owner", dev: "Dev", mod: "Mod", vip: "VIP", partner: "Partner",
+  creator: "Creator", supporter: "Supporter", tester: "Tester",
+  og: "OG", standard: "Standard",
+};
 
 const STORE_KEY = "sc-badges-token";
 
@@ -212,6 +223,13 @@ function render() {
     const row = document.createElement("div");
     row.className = "row-item";
 
+    // Das Zeichen selbst, damit die Zeile zeigt, wovon sie spricht.
+    const mark = document.createElement("img");
+    mark.className = "mark";
+    mark.alt = "";
+    mark.src = "icons/" + (entry.rank || "standard") + ".png";
+    row.appendChild(mark);
+
     const who = document.createElement("div");
     who.className = "who";
 
@@ -239,6 +257,7 @@ function render() {
     }
     rank.addEventListener("change", () => {
       entries[index].rank = rank.value;
+      mark.src = "icons/" + rank.value + ".png";
       status("Nicht gespeichert.");
     });
 
@@ -331,7 +350,19 @@ async function addEntry() {
   );
 }
 
+function fillRankChooser() {
+  const select = $("new-rank");
+  select.replaceChildren();
+  for (const value of RANKS) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = RANK_LABEL[value];
+    select.appendChild(option);
+  }
+}
+
 function start() {
+  fillRankChooser();
   $("connect").addEventListener("click", connect);
   $("signout").addEventListener("click", signOut);
   $("add").addEventListener("click", addEntry);
