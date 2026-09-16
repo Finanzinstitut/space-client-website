@@ -1,0 +1,145 @@
+/*
+ * Nur der Rahmen um die Demo. Alles darin kommt aus launcher.css, und das ist
+ * die Zusage: was hier zu sehen ist, ist der Launcher, nicht eine Zeichnung
+ * davon. Deshalb steht in dieser Datei keine einzige Regel, die eine Flaeche
+ * des Launchers umfaerbt oder verschiebt.
+ */
+
+.demo-body {
+  overflow: auto;
+  background: #000;
+  padding-bottom: 60px;
+}
+
+.demo-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: min(1180px, 100% - 40px);
+  margin: 0 auto;
+  padding: 22px 0 16px;
+}
+
+.demo-back {
+  color: #97979f;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  transition: background 170ms, color 170ms;
+}
+.demo-back:hover { background: rgba(255, 255, 255, 0.06); color: #f3f3f6; }
+
+.demo-tag {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(245, 196, 81, 0.09);
+  border: 1px solid rgba(245, 196, 81, 0.26);
+  color: #f5c451;
+  font-size: 12.5px;
+}
+
+/* --- das Fenster --- */
+
+.demo-frame {
+  width: min(1180px, 100% - 40px);
+  margin: 0 auto;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: #000;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 16px;
+  background: #08080a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.demo-dot { width: 10px; height: 10px; border-radius: 50%; background: #2a2a30; }
+.demo-title { margin-left: 8px; font-size: 12px; color: #5c5c66; letter-spacing: 0.04em; }
+
+/*
+ * Der Launcher ist ein Fenster und kein Dokument. Auf einem schmalen Schirm
+ * wird die ganze Oberflaeche verkleinert statt umgebrochen - ein Launcher, der
+ * umbricht wie eine Webseite, zeigt nicht mehr, wie der Launcher aussieht.
+ */
+.demo-scale {
+  width: 100%;
+  overflow: hidden;
+}
+.demo-scale .app {
+  height: 760px;
+  width: 1180px;
+  transform-origin: top left;
+}
+
+@media (max-width: 1220px) {
+  .demo-scale { height: calc(760px * 0.72); }
+  .demo-scale .app { transform: scale(0.72); }
+}
+@media (max-width: 900px) {
+  .demo-scale { height: calc(760px * 0.52); }
+  .demo-scale .app { transform: scale(0.52); }
+}
+@media (max-width: 660px) {
+  .demo-scale { height: calc(760px * 0.36); }
+  .demo-scale .app { transform: scale(0.36); }
+}
+
+/* Innerhalb des Rahmens darf nichts an der Seite kleben bleiben. */
+.demo-frame .modal-backdrop { position: fixed; }
+
+/* --- Platzhalter fuer die Figur, die es hier nicht gibt --- */
+
+.demo-skin {
+  width: 74px; height: 150px;
+  border-radius: 8px;
+  background:
+    linear-gradient(#e0b48c 0 46px, transparent 46px),
+    linear-gradient(90deg, transparent 0 18px, #4a6fc4 18px 56px, transparent 56px),
+    linear-gradient(#0000 0 46px, #4a6fc4 46px 96px, #3c3550 96px 150px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+}
+.demo-skin.big { width: 104px; height: 210px; }
+
+.demo-body .account-avatar,
+.demo-body .mod-icon {
+  background: linear-gradient(140deg, #2a2a30, #121214);
+}
+
+/* --- der Hinweis unten --- */
+
+.demo-toast {
+  position: fixed;
+  left: 50%; bottom: 26px;
+  transform: translate(-50%, 16px);
+  z-index: 200;
+  max-width: min(520px, calc(100% - 40px));
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #0b0b0d;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7);
+  color: #f3f3f6;
+  font-size: 13.5px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms, transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.demo-toast.shown { opacity: 1; transform: translate(-50%, 0); }
+
+@keyframes demo-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-toast { transition: none; }
+  .demo-body * { animation: none !important; }
+}
