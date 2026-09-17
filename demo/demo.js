@@ -50,6 +50,8 @@ const BUNDLES = {
     warning: "",
     credits: "Credits: Finanzinstitut",
     items: ["Low Health Warning", "No Soundcap", "PvP Item Highlighter"],
+    requiresMc: ["26.2.x"],
+    requiresLoader: ["fabric"],
   },
   doktorsam: {
     title: "DoktorSam's PvP textures",
@@ -205,6 +207,72 @@ function showView(name) {
 
 // ---------------------------------------------------------------- Pakete
 
+/*
+ * Dieselbe Pruefung wie im Launcher (bundles.rs::fits), mit demselben Satz.
+ *
+ * Die Demo darf hier nicht grosszuegiger sein als das Programm: wer hier auf
+ * "Vanilla 1.21.4" klickt und Installieren gedrueckt bekommt, wuerde es im
+ * Launcher gesperrt vorfinden und die Demo fuer einen Nachbau halten, der
+ * nicht stimmt. ".x" heisst Familie - 26.2 und jedes 26.2.<n>.
+ */
+function versionFits(want, have) {
+  if (want.endsWith(".x")) {
+    const base = want.slice(0, -2);
+    return have === base || have.startsWith(base + ".");
+  }
+  return want === have;
+}
+
+const capitalise = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
+function bundleFits(bundle, inst) {
+  const wantMc = bundle.requiresMc || [];
+  const wantLoader = bundle.requiresLoader || [];
+  const mcOk = !wantMc.length || wantMc.some((want) => versionFits(want, inst.mc));
+  const loaderOk = !wantLoader.length ||
+    wantLoader.some((want) => want.toLowerCase() === inst.loader.toLowerCase());
+  if (mcOk && loaderOk) return "";
+
+  let wants = "";
+  if (wantMc.length && wantLoader.length) {
+    wants = `Minecraft ${wantMc[0].replace(/\.x$/, "")} mit ${capitalise(wantLoader[0])}`;
+  } else if (wantMc.length) {
+    wants = `Minecraft ${wantMc[0].replace(/\.x$/, "")}`;
+  } else {
+    wants = capitalise(wantLoader[0]);
+  }
+  return `Geht nur in einer Instanz mit ${wants} — diese ist ${inst.mc} (${capitalise(inst.loader)}).`;
+}
+
+/*
+ * Nach jedem Wechsel der Instanz neu entscheiden.
+ *
+ * renderList bleibt aus, wenn der Dialog schon ein Ergebnis zeigt - sonst
+ * raeumt ein Wechsel das gerade gespielte "installiert" wieder weg.
+ */
+function refreshBundleFit(renderList = true) {
+  const bundle = BUNDLES[openBundle];
+  if (!bundle) return;
+
+  const inst = INSTANCES[Number($("bundle-instance").value) || 0];
+  const reason = bundle.blocked || (inst ? bundleFits(bundle, inst) : "");
+
+  const status = $("bundle-status");
+  status.textContent = reason;
+  status.className = "status-line" + (reason ? " warn" : "");
+  $("btn-bundle-install").disabled = Boolean(reason);
+  $("bundle-instance-field").classList.toggle("hidden", Boolean(bundle.blocked));
+
+  if (!renderList) return;
+  const list = $("bundle-list");
+  list.replaceChildren();
+  bundle.items.forEach((name) => {
+    const li = document.createElement("li");
+    li.textContent = name;
+    list.appendChild(li);
+  });
+}
+
 let openBundle = null;
 
 function openBundleModal(id) {
@@ -220,29 +288,17 @@ function openBundleModal(id) {
   warning.textContent = bundle.warning || "";
   warning.classList.toggle("hidden", !bundle.warning);
 
-  const status = $("bundle-status");
-  status.textContent = bundle.blocked || "";
-  status.className = "status-line" + (bundle.blocked ? " warn" : "");
-
-  const locked = Boolean(bundle.blocked);
-  $("bundle-instance-field").classList.toggle("hidden", locked);
-  $("btn-bundle-install").disabled = locked;
-
   const select = $("bundle-instance");
   select.replaceChildren();
-  INSTANCES.forEach((inst) => {
+  INSTANCES.forEach((inst, i) => {
     const opt = document.createElement("option");
+    opt.value = String(i);
     opt.textContent = `${inst.name} — ${inst.mc} (${inst.loader})`;
     select.appendChild(opt);
   });
+  select.value = "0";
 
-  const list = $("bundle-list");
-  list.replaceChildren();
-  bundle.items.forEach((name) => {
-    const li = document.createElement("li");
-    li.textContent = name;
-    list.appendChild(li);
-  });
+  refreshBundleFit();
 
   $("bundle-backdrop").classList.remove("hidden");
 }
@@ -262,7 +318,7 @@ function closeBundleModal() {
  */
 function playInstall() {
   const bundle = BUNDLES[openBundle];
-  if (!bundle || bundle.blocked) return;
+  if (!bundle || $("btn-bundle-install").disabled) return;
 
   const list = $("bundle-list");
   const rows = [...list.children];
@@ -299,6 +355,7 @@ function start() {
   document.querySelectorAll(".nav-extra").forEach((b) =>
     b.addEventListener("click", () => openBundleModal(b.dataset.bundle)));
 
+  $("bundle-instance").addEventListener("change", () => refreshBundleFit());
   $("btn-bundle-cancel").addEventListener("click", closeBundleModal);
   $("btn-bundle-install").addEventListener("click", playInstall);
   $("bundle-backdrop").addEventListener("click", (e) => {
