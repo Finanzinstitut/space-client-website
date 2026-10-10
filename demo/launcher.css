@@ -29,6 +29,15 @@
  */
 
 :root {
+  /*
+   * Tells the engine the page is dark. Without it everything the page does not
+   * paint itself - the dropdown list of a select, scrollbar corners, the
+   * caret, autofill, the context menu - follows the system theme, and on a
+   * machine set to light mode those came out white in the middle of a black
+   * window.
+   */
+  color-scheme: dark;
+
   /* --- surfaces, darkest to lightest --- */
   --bg-deep: #000000;
   --bg-mid: #08080a;
@@ -74,7 +83,68 @@
   --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.7);
 
   --sidebar-w: 232px;
+
+  /* --- theme extras: the second accent, the soft wash and the two colours
+     the animated background is drawn in --- */
+  --accent-2: #ffffff;
+  --glow: rgba(255, 255, 255, 0.035);
+  --anim-a: #ffffff;
+  --anim-b: #b9b9c8;
 }
+
+/*
+ * Colour themes. Each one is the same set of variables with other values -
+ * nothing in the rest of this sheet knows a theme exists, which is what keeps
+ * a seventh theme a dozen lines rather than a hunt through every rule.
+ */
+:root[data-theme="nebula"] {
+  --bg-deep: #05030a; --bg-mid: #0a0711; --bg-panel: #0d0a15;
+  --surface: #14101d; --surface-hi: #1d1729; --chip: #201a2c; --chip-hi: #2c2440;
+  --accent: #b794ff; --accent-2: #e6d9ff; --accent-soft: #2e2445; --on-accent: #0d0716;
+  --border: rgba(200, 170, 255, 0.08); --border-hi: rgba(200, 170, 255, 0.17);
+  --glow: rgba(183, 148, 255, 0.07); --anim-a: #8b5cf6; --anim-b: #ec4899;
+}
+:root[data-theme="ocean"] {
+  --bg-deep: #02070b; --bg-mid: #050c12; --bg-panel: #07111a;
+  --surface: #0c1720; --surface-hi: #12212d; --chip: #142430; --chip-hi: #1c3242;
+  --accent: #4cc9f0; --accent-2: #c2efff; --accent-soft: #123345; --on-accent: #02121a;
+  --border: rgba(140, 210, 255, 0.08); --border-hi: rgba(140, 210, 255, 0.17);
+  --glow: rgba(76, 201, 240, 0.06); --anim-a: #0ea5e9; --anim-b: #2dd4bf;
+}
+:root[data-theme="ember"] {
+  --bg-deep: #080402; --bg-mid: #0e0805; --bg-panel: #120a06;
+  --surface: #1a100a; --surface-hi: #24170f; --chip: #281a11; --chip-hi: #362419;
+  --accent: #ff8a3d; --accent-2: #ffd6b3; --accent-soft: #3d2210; --on-accent: #1a0a02;
+  --border: rgba(255, 170, 120, 0.08); --border-hi: rgba(255, 170, 120, 0.17);
+  --glow: rgba(255, 138, 61, 0.06); --anim-a: #f97316; --anim-b: #fbbf24;
+}
+:root[data-theme="forest"] {
+  --bg-deep: #030805; --bg-mid: #060d08; --bg-panel: #08110b;
+  --surface: #0e1a12; --surface-hi: #15241a; --chip: #17281c; --chip-hi: #213726;
+  --accent: #6ee7a0; --accent-2: #cdf8df; --accent-soft: #163a25; --on-accent: #04140a;
+  --border: rgba(140, 255, 190, 0.07); --border-hi: rgba(140, 255, 190, 0.15);
+  --glow: rgba(110, 231, 160, 0.05); --anim-a: #22c55e; --anim-b: #d9f99d;
+}
+:root[data-theme="sakura"] {
+  --bg-deep: #0a0508; --bg-mid: #10080d; --bg-panel: #140a10;
+  --surface: #1c1017; --surface-hi: #26161f; --chip: #2a1822; --chip-hi: #3a2230;
+  --accent: #ff9ec7; --accent-2: #ffdcec; --accent-soft: #42202f; --on-accent: #1a0610;
+  --border: rgba(255, 170, 210, 0.08); --border-hi: rgba(255, 170, 210, 0.17);
+  --glow: rgba(255, 158, 199, 0.06); --anim-a: #f472b6; --anim-b: #fecdd3;
+}
+
+/* The animated background, under everything. See background.js. */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+#bg-canvas.on { opacity: 1; }
 
 * { box-sizing: border-box; }
 
@@ -83,6 +153,7 @@ html, body {
   padding: 0;
   height: 100%;
   background: var(--bg-deep);
+  transition: background-color 400ms ease;
   color: var(--text);
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 14px;
@@ -106,7 +177,7 @@ html, body {
   top: -340px; right: -280px;
   width: 720px; height: 720px;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.045), transparent 65%);
+  background: radial-gradient(circle at 50% 50%, var(--glow), transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
@@ -123,7 +194,8 @@ html, body {
 .sidebar {
   width: var(--sidebar-w);
   flex: 0 0 var(--sidebar-w);
-  background: var(--bg-mid);
+  /* A little see-through, so the moving background reaches the edge */
+  background: color-mix(in srgb, var(--bg-mid) 88%, transparent);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -146,7 +218,7 @@ html, body {
   border-radius: 50%;
   flex: 0 0 22px;
   /* A planet with its light on one side, the same shape the mod's icon draws */
-  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #cfcfd8 28%, #46464e 70%, #1a1a1e 100%);
+  background: radial-gradient(circle at 34% 30%, var(--accent-2) 0%, color-mix(in srgb, var(--accent) 55%, #b9b9c4) 28%, color-mix(in srgb, var(--accent) 22%, #34343c) 70%, var(--bg-mid) 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
@@ -256,9 +328,9 @@ html, body {
   min-width: 0;
   overflow-y: auto;
   padding: 30px 34px 44px;
+  /* Transparent underneath, so the animated background shows through */
   background:
-    radial-gradient(1100px 520px at 78% -12%, rgba(255, 255, 255, 0.035), transparent 70%),
-    var(--bg-deep);
+    radial-gradient(1100px 520px at 78% -12%, var(--glow), transparent 70%);
 }
 
 .view { display: none; }
@@ -319,9 +391,21 @@ h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
   min-height: 16px;
   margin-top: 10px;
 }
+/*
+ * Alle Namen, die das Skript wirklich durchreicht, nicht die, die ich beim
+ * Neuschreiben dieses Blattes fuer wahrscheinlich hielt.
+ *
+ * Es waren drei Regeln, und das Skript sagt an 71 von 74 Stellen "error" oder
+ * "success" - beides ohne Regel. Also war eine fehlgeschlagene Anmeldung grau
+ * und ein gegluecktes Speichern auch, und der Unterschied zwischen beiden war
+ * der Wortlaut. Gezaehlt, nicht geschaetzt: grep ueber main.js.
+ */
 .status-line.warn { color: var(--warn); }
-.status-line.danger { color: var(--danger); }
-.status-line.done { color: var(--success); }
+.status-line.danger,
+.status-line.error { color: var(--danger); }
+.status-line.done,
+.status-line.ok,
+.status-line.success { color: var(--success); }
 
 /* ============================ hero ============================ */
 
@@ -347,7 +431,12 @@ h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
   /* A pool of light under the figure, so it stands on something */
   background: radial-gradient(ellipse at 50% 82%, rgba(255, 255, 255, 0.05), transparent 52%);
 }
-.hero-figure canvas { max-width: 100%; max-height: 100%; }
+/* Sized by the box, not by its own pixel count. With only max-width and
+   max-height the canvas took its size from whatever resolution the first
+   draw happened to give it - and that depended on whether the page was laid
+   out yet, so on some starts the figure came up small and stayed small until
+   switching tabs redrew it. */
+.hero-figure canvas { width: 100%; height: 100%; display: block; }
 
 .hero-main { flex: 1; min-width: 0; }
 
@@ -488,7 +577,8 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 select:focus {
   border-color: var(--border-hi);
-  background: var(--surface-hi);
+  /* The colour only: the shorthand also cleared the select's drawn chevron */
+  background-color: var(--surface-hi);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
@@ -507,6 +597,35 @@ select {
   cursor: pointer;
 }
 select option { background: var(--surface); color: var(--text); }
+
+/* The launcher's own dropdown list - see openSelectMenu in main.js */
+.select-menu {
+  position: fixed;
+  z-index: 300;
+  overflow-y: auto;
+  padding: 5px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-hi);
+  background: var(--surface-hi);
+  box-shadow: var(--shadow-lg);
+  animation: select-menu-in 120ms ease-out;
+}
+@keyframes select-menu-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: none; }
+}
+.select-item {
+  padding: 8px 11px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.select-item.selected { color: var(--text); font-weight: 600; }
+.select-item.active { background: var(--chip-hi); color: var(--text); }
+.select-item.disabled { color: var(--text-off); cursor: default; }
+select.select-open { border-color: var(--border-hi); background-color: var(--surface-hi); }
 
 input[type="range"] {
   -webkit-appearance: none;
@@ -556,6 +675,11 @@ input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.15); }
   font-weight: 400;
 }
 .check-row { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+/* A single check-row label is one box and its text, not a row of options:
+   centred on each other and close together, like every other checkbox. */
+label.check-row { align-items: center; gap: 9px; font-size: 13px; cursor: pointer; }
+.import-options { align-items: center; }
+#export-sub { margin: -10px 0 14px; }
 
 /* The number that belongs to a slider, on its own line under it. */
 #ram-value, #new-ram-value, #edit-ram-value {
@@ -580,6 +704,21 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked {
   background: var(--accent);
   border-color: var(--accent);
+}
+input[type="checkbox"]:indeterminate,
+input[type="checkbox"]:checked:indeterminate {
+  background: var(--accent-soft);
+  border-color: var(--border-hi);
+}
+input[type="checkbox"]:indeterminate::after,
+input[type="checkbox"]:checked:indeterminate::after {
+  content: "";
+  position: absolute;
+  left: 4px; top: 7px;
+  width: 7px; height: 2px;
+  border: 0;
+  transform: none;
+  background: var(--text);
 }
 input[type="checkbox"]:checked::after {
   content: "";
@@ -617,7 +756,7 @@ input[type="checkbox"]:checked::after {
   background: var(--accent);
   color: var(--on-accent);
 }
-.btn.primary:hover:not(:disabled) { background: #ffffff; }
+.btn.primary:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 82%, #ffffff); }
 
 .btn.secondary {
   background: var(--chip);
@@ -769,7 +908,7 @@ input[type="checkbox"]:checked::after {
   width: 34px; height: 34px;
   flex: 0 0 34px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #b9b9c4 26%, #3c3c44 68%, #17171a 100%);
+  background: radial-gradient(circle at 34% 30%, var(--accent-2) 0%, color-mix(in srgb, var(--accent) 55%, #b9b9c4) 26%, color-mix(in srgb, var(--accent) 22%, #34343c) 68%, var(--bg-mid) 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -1003,6 +1142,23 @@ input[type="checkbox"]:checked::after {
 
 .account-list { display: flex; flex-direction: column; gap: 8px; }
 
+/* Both headings in the account card - the list of accounts and the block for
+   adding another - look like every other section heading in the launcher.
+   They were bare labels, and a bare label here is inline body text that
+   happens to sit above a list. */
+.account-list > label,
+#account-signed-out > .section-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-off);
+  margin-bottom: 4px;
+}
+
+#account-signed-out > .section-label { margin: 22px 0 10px; }
+#account-list:not(:empty) { margin-bottom: 18px; }
+
 .account-row {
   display: flex;
   align-items: center;
@@ -1082,6 +1238,21 @@ input[type="checkbox"]:checked::after {
   box-shadow: var(--shadow-lg);
 }
 .update-banner #update-text { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
+.update-banner > div:first-child { flex: 1; min-width: 0; }
+.update-bar {
+  height: 5px;
+  margin-top: 9px;
+  border-radius: 99px;
+  background: var(--border-hi);
+  overflow: hidden;
+}
+.update-bar > div {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
 
 /* ============================ modals ============================ */
 
@@ -1108,6 +1279,75 @@ input[type="checkbox"]:checked::after {
   box-shadow: var(--shadow-lg);
 }
 .modal h2 { margin-bottom: 20px; }
+
+/* ============================ export ============================ */
+
+.modal.modal-wide { width: min(720px, 100%); }
+
+.export-tools { flex-wrap: wrap; margin: 4px 0 10px; }
+.export-summary { margin-left: auto; color: var(--text-dim); font-size: 12px; }
+
+.export-tree {
+  height: min(42vh, 360px);
+  overflow-y: auto;
+  padding: 6px 0;
+  margin-bottom: 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.export-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding-right: 12px;
+  font-size: 13px;
+}
+.export-row:hover { background: rgba(255, 255, 255, 0.04); }
+.export-row.empty { color: var(--text-off); font-style: italic; }
+.export-row.dir .export-name { color: var(--text); }
+
+.export-twisty {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.export-twisty:disabled { visibility: hidden; cursor: default; }
+
+.export-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.export-size { color: var(--text-off); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+.export-formats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.export-format {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 160ms, background 160ms;
+}
+.export-format:has(input:checked) { border-color: var(--border-hi); background: var(--surface-hi); }
+.export-format input { margin-top: 2px; accent-color: var(--accent); }
+.export-format-body { display: flex; flex-direction: column; gap: 4px; }
+.export-format-body strong { font-size: 13px; color: var(--text); }
+.export-format-body span { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
 
 /* ============================ console ============================ */
 
@@ -1239,7 +1479,7 @@ input[type="checkbox"]:checked::after {
 .intro-orb {
   width: 60px; height: 60px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #ffffff 0%, #cfcfd8 26%, #46464e 68%, #141418 100%);
+  background: radial-gradient(circle at 34% 30%, var(--accent-2) 0%, color-mix(in srgb, var(--accent) 55%, #b9b9c4) 26%, color-mix(in srgb, var(--accent) 22%, #34343c) 68%, var(--bg-mid) 100%);
   box-shadow: 0 0 44px rgba(255, 255, 255, 0.14);
 }
 .intro-greeting { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
@@ -1468,3 +1708,153 @@ input[type="checkbox"].switch:checked::before { content: none; }
   .set-row { flex-wrap: wrap; gap: 12px; }
   .set-control.wide { flex: 1 1 100%; }
 }
+
+/* ---------------- Clips ---------------- */
+
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.clip-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text);
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+}
+
+.clip-card:hover {
+  background: var(--surface-hi);
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+}
+
+/* Ein fester Bildausschnitt, damit die Kacheln eine Reihe bleiben, auch wenn
+   ein Clip noch kein Standbild hat. */
+.clip-thumb {
+  aspect-ratio: 16 / 9;
+  background: #0a0a0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clip-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.clip-meta { padding: 9px 11px 11px; }
+.clip-name { font-size: 13px; font-weight: 600; }
+.clip-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+#clip-player-wrap { margin-bottom: 18px; }
+
+#clip-player {
+  width: 100%;
+  max-height: 46vh;
+  background: #000;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* ===========================================================================
+ * Edition switch (Java / Bedrock) and the Bedrock home panel
+ * ======================================================================== */
+.edition-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+}
+.edition-opt {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 6px 18px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.edition-opt:hover { color: var(--text); }
+.edition-opt.active { background: var(--accent); color: var(--on-accent); }
+
+.bedrock-pack {
+  margin-top: 18px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  max-width: 460px;
+}
+.bedrock-pack-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.bedrock-pack-title { font-weight: 700; }
+.bedrock-pack-state { font-size: 12px; color: var(--text-dim); }
+.bedrock-pack-state.on { color: var(--success); }
+.bedrock-pack-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ============================ themes picker ============================ */
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+.theme-swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms, transform 160ms, background 160ms;
+}
+.theme-swatch:hover { transform: translateY(-1px); border-color: var(--border-hi); }
+.theme-swatch.active { border-color: var(--accent); color: var(--text); background: var(--surface-hi); }
+.theme-preview {
+  height: 46px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  position: relative;
+}
+.theme-preview::after {
+  content: "";
+  position: absolute;
+  right: 8px; bottom: 8px;
+  width: 22px; height: 8px;
+  border-radius: 999px;
+  background: var(--swatch-accent);
+}
+.set-row.theme-row { flex-direction: column; align-items: stretch; gap: 12px; }
