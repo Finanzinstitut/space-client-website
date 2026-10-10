@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Space Client — a Minecraft client for 26.2</title>
-<meta name="description" content="Space Client ist ein Launcher und ein Fabric-Mod für Minecraft 26.2: 24 HUD-Module, Modrinth-Browser, mehrere Konten und eine Live-Konsole." />
+<title>Space Client — a Minecraft client for 1.21.11 to 26.3</title>
+<meta name="description" content="Space Client is a launcher and a Fabric mod for Minecraft 1.21.11, 26.1, 26.2 and 26.3: 53 modules, friends and group chats, clips, colour themes, Modrinth and CurseForge, several accounts and a live console." />
 <link rel="icon" href="assets/favicon.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -26,6 +26,7 @@
   </div>
   <nav class="nav-links">
     <a href="#module" data-i18n="nav_modules">Modules</a>
+    <a href="#friends" data-i18n="nav_friends">Friends</a>
     <a href="#launcher" data-i18n="nav_launcher">Launcher</a>
     <a href="#nowplaying" data-i18n="nav_music">Music</a>
     <a href="demo/" data-i18n="nav_demo">Demo</a>
@@ -37,10 +38,10 @@
 <main id="top">
 
   <section class="hero">
-    <p class="eyebrow">Minecraft 26.2 · Fabric</p>
+    <p class="eyebrow">Minecraft 1.21.11 · 26.1 · 26.2 · 26.3 · Fabric</p>
     <h1><span data-i18n="hero_h1a">A client that</span><br /><span class="grad" data-i18n="hero_h1b">stays out of the way.</span></h1>
     <p class="lede">
-<span data-i18n="hero_lede">Space Client brings together 24 HUD modules, a launcher with multi-account support, and cosmetics through Cosmetica. Open source, free.</span>
+<span data-i18n="hero_lede">Space Client brings together 53 modules, friends with group chats, clips, a launcher with colour themes and several accounts, and cosmetics through Cosmetica. One mod for every full release from 1.21.11 to 26.3. Open source, free.</span>
     </p>
     <div class="hero-actions">
       <a class="btn primary" href="#download" data-i18n="hero_dl">Download the launcher</a>
@@ -52,7 +53,7 @@
     <div class="console" role="img" aria-label="Beispielausgabe der Live-Konsole beim Start einer Instanz">
       <div class="console-bar">
         <span class="dot"></span>
-        <span class="console-title" data-i18n="con_title">Live console — cozy-and-pvp 26.2</span>
+        <span class="console-title" data-i18n="con_title">Live console — cozy-and-pvp 26.3</span>
         <span class="console-state" data-i18n="con_state">running</span>
       </div>
       <pre class="console-body"><code id="console-out"></code><span class="caret" aria-hidden="true"></span></pre>
@@ -61,9 +62,9 @@
 
   <section id="module" class="section">
     <p class="eyebrow" data-i18n="eb_ingame">In game</p>
-    <h2 data-i18n="mod_h2">46 modules, each on its own switch</h2>
+    <h2 data-i18n="mod_h2">53 modules, each on its own switch</h2>
     <p class="section-lede">
-<span data-i18n="mod_lede">Right Shift opens the menu. Every module can be switched on, configured and placed anywhere on the HUD. Click one to see what it does.</span>
+<span data-i18n="mod_lede">Right Shift opens the menu. Every module can be switched on, configured and placed anywhere on the HUD. Click one to see what it does. A few heavier extras are tied to a rank: Clips, Now Playing and Wavey Cape need VIP, Light Level is still with the team.</span>
     </p>
 
     <div class="cat">
@@ -94,6 +95,9 @@
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_server">Server</span><span class="card-desc" data-i18n="d_server">The address and icon of the server you are on</span></button></li>
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_twitch">Twitch Followers</span><span class="card-desc" data-i18n="d_twitch">Follower count and newest follower for your channel</span></button></li>
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_memwarn">Memory warning</span><span class="card-desc" data-i18n="d_memwarn">Warns in chat before the game runs out of memory</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_scoreboard">Scoreboard</span><span class="card-desc" data-i18n="d_scoreboard">Move, hide or recolour the server&#39;s scoreboard</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_overlay">Overlay</span><span class="card-desc" data-i18n="d_overlay">Size of hearts, hotbar and bars, fire, pumpkin, shield and more</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_lightlevel">Light Level</span><span class="card-desc" data-i18n="d_lightlevel">Red and green crosses where monsters can or cannot spawn</span></button></li>
       </ul>
     </div>
 
@@ -127,8 +131,27 @@
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_physics">Item Physics</span><span class="card-desc" data-i18n="d_physics">Dropped items lie on the ground instead of spinning</span></button></li>
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_boost">FPS Boost</span><span class="card-desc" data-i18n="d_boost">Skips drawing work whose result nobody could see</span></button></li>
         <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_highlight">Block Highlight</span><span class="card-desc" data-i18n="d_highlight">Marks the block under your crosshair more clearly</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_fullbright">Fullbright</span><span class="card-desc" data-i18n="d_fullbright">Lights up caves and nights - not night vision</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_blur">Motion Blur</span><span class="card-desc" data-i18n="d_blur">A smooth trail when turning, tuned for PvP</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_clips">Clips</span><span class="card-desc" data-i18n="d_clips">Keeps the last seconds of play - one key saves them</span></button></li>
+        <li><button type="button" class="card" aria-expanded="false"><span class="card-name" data-i18n="n_brand">Container Logo</span><span class="card-desc" data-i18n="d_brand">The Space Client logo in chests and inventories</span></button></li>
       </ul>
     </div>
+  </section>
+
+  <section id="friends" class="section">
+    <p class="eyebrow" data-i18n="eb_friends">Together</p>
+    <h2 data-i18n="fr_h2">Friends and group chats</h2>
+    <p class="section-lede" data-i18n="fr_lede">
+      Add people by their Minecraft name and write to them from any server or
+      from the menu - no Discord in between.
+    </p>
+    <ul class="ticks">
+      <li data-i18n-html="fr1"><b>Requests and chats</b> that update live, a message arrives within about a second.</li>
+      <li data-i18n-html="fr2"><b>Group chats</b> — pick several friends, write together, invite more later or leave.</li>
+      <li data-i18n-html="fr3"><b>Signed in through Mojang</b> — your account proves who you are, no password ever reaches us.</li>
+      <li data-i18n-html="fr4"><b>Ranks and badges</b> over your name for VIPs, creators, partners and the team.</li>
+    </ul>
   </section>
 
   <section id="launcher" class="section split">
@@ -141,14 +164,17 @@
       <ul class="ticks">
         <li data-i18n-html="l1"><b>Multiple accounts</b> through Microsoft sign-in, switched without restarting.</li>
         <li data-i18n-html="l2"><b>Modrinth and CurseForge</b> — search both, install, dependencies come along.</li>
-        <li data-i18n-html="l3"><b>Import modpacks</b> from <code>.mrpack</code> files.</li>
+        <li data-i18n-html="l3"><b>Import and export</b> — <code>.mrpack</code>, NoRisk and CurseForge packs in, your own instance out as a Space Client <code>.spc</code> or a Modrinth pack, file by file.</li>
         <li data-i18n-html="l4"><b>Any Java version</b> and any mod loader, set per instance.</li>
         <li data-i18n-html="l5"><b>Live console</b> for every running instance, straight from the list.</li>
         <li data-i18n-html="l6"><b>Preinstall Cosmetica</b> when creating an instance, one checkbox.</li>
         <li data-i18n-html="l7"><b>Mod sets per server</b> — pick what loads before the game starts, per address.</li>
         <li data-i18n-html="l8"><b>World backups</b> before a launch, packed while nothing is writing to them.</li>
         <li data-i18n-html="l9"><b>Crash reports that name names</b> — the mods the log actually mentions.</li>
-        <li data-i18n-html="l10"><b>The client mod keeps itself current</b>, fetched before the game starts.</li>
+        <li data-i18n-html="l10"><b>The right client mod for every version</b> — 1.21.11, 26.1, 26.2 or 26.3, fetched before the game starts.</li>
+        <li data-i18n-html="l11"><b>Same settings everywhere</b> — keybinds, server list and your Space Client setup are carried from your main instance into every other.</li>
+        <li data-i18n-html="l12"><b>Colour themes</b> — Space, Nebula, Ocean, Ember, Forest and Sakura, each with its own animated background.</li>
+        <li data-i18n-html="l13"><b>Clips</b> — the last seconds of play, saved with one key and watched in the launcher.</li>
       </ul>
     </div>
     <div class="panel-shot" aria-hidden="true">
@@ -164,8 +190,8 @@
           <span class="shot-chip live"><i></i> <span data-i18n="shot_run">Running (1)</span></span>
           <span class="shot-chip" data-i18n="shot_new">+ New instance</span>
         </div>
-        <div class="shot-card"><b>cozy-and-pvp</b><small>26.2 · Fabric</small></div>
-        <div class="shot-card"><b>creative-flat</b><small>26.2 · Fabric</small></div>
+        <div class="shot-card"><b>cozy-and-pvp</b><small>26.3 · Fabric</small></div>
+        <div class="shot-card"><b>hypixel-1.21</b><small>1.21.11 · Fabric</small></div>
         <div class="shot-card dim"><b>vanilla-test</b><small>26.2 · Vanilla</small></div>
       </div>
     </div>
@@ -221,7 +247,7 @@
     <div class="dl-grid">
       <article class="dl-card">
         <h3>Launcher</h3>
-        <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, Fabric and the client mod itself.</p>
+        <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, Fabric, Java and the right client mod itself.</p>
         <a class="btn primary" href="download/SpaceClient-setup.exe" download data-i18n="dl_win">For Windows</a>
         <p class="fineprint"><span id="dl-version">Version 1.9.1</span> · <span data-i18n="dl_fp1">64-bit installer · 4.2 MB</span></p>
       </article>
@@ -230,14 +256,14 @@
         <h3 data-i18n="dl_mod">The mod only</h3>
         <p data-i18n-html="dl_mod_p">For anyone who already has a launcher. Drop it in the <code>mods</code> folder.</p>
         <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client-Mod/releases" target="_blank" rel="noopener" data-i18n="dl_jar">Download the JAR</a>
-        <p class="fineprint" data-i18n="dl_fp2">Needs Fabric Loader and Fabric API for 26.2</p>
+        <p class="fineprint" data-i18n="dl_fp2">One JAR per version: 1.21.11, 26.1, 26.2 or 26.3. Needs Fabric Loader and Fabric API.</p>
       </article>
     </div>
 
     <dl class="reqs">
-      <div><dt>Minecraft</dt><dd>26.2</dd></div>
+      <div><dt>Minecraft</dt><dd>1.21.11 · 26.1 · 26.2 · 26.3</dd></div>
       <div><dt data-i18n="rq_loader">Loader</dt><dd>Fabric</dd></div>
-      <div><dt>Java</dt><dd data-i18n="rq_java_v">25 or newer</dd></div>
+      <div><dt>Java</dt><dd data-i18n="rq_java_v">21 for 1.21.11, 25 for 26.x — the launcher brings it</dd></div>
       <div><dt data-i18n="rq_acc">Account</dt><dd data-i18n="rq_acc_v">Microsoft, Java Edition owned</dd></div>
     </dl>
   </section>
@@ -271,7 +297,7 @@
  */
 (function () {
   var DE = {
-    nav_modules: "Module", nav_launcher: "Launcher", nav_music: "Musik",
+    nav_modules: "Module", nav_launcher: "Launcher", nav_music: "Musik", nav_friends: "Freunde",
     nav_demo: "Demo",
     eb_demo: "Ausprobieren",
     demo_h2: "Der Launcher, ohne ihn zu installieren",
@@ -281,16 +307,16 @@
 
     hero_h1a: "Ein Client, der",
     hero_h1b: "aus dem Weg geht.",
-    hero_lede: "Space Client bringt 24 HUD-Module, einen Launcher mit mehreren Konten und Cosmetics über Cosmetica zusammen. Quelloffen und kostenlos.",
+    hero_lede: "Space Client bringt 53 Module, Freunde mit Gruppenchats, Clips, einen Launcher mit Farbthemen und mehreren Konten und Cosmetics über Cosmetica zusammen. Eine Mod für jede Vollversion von 1.21.11 bis 26.3. Quelloffen und kostenlos.",
     hero_dl: "Launcher herunterladen",
     hero_source: "Quellcode ansehen",
 
-    con_title: "Live-Konsole — cozy-and-pvp 26.2",
+    con_title: "Live-Konsole — cozy-and-pvp 26.3",
     con_state: "läuft",
 
     eb_ingame: "Im Spiel",
-    mod_h2: "46 Module, einzeln schaltbar",
-    mod_lede: "Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln einschalten, einstellen und im HUD frei platzieren. Klick eines an, um zu sehen, was es tut.",
+    mod_h2: "53 Module, einzeln schaltbar",
+    mod_lede: "Rechte Umschalttaste öffnet das Menü. Jedes Modul lässt sich einzeln einschalten, einstellen und im HUD frei platzieren. Klick eines an, um zu sehen, was es tut. Ein paar aufwendigere Extras hängen an einem Rang: Clips, Now Playing und Wavey Cape brauchen VIP, Light Level ist noch beim Team.",
     cat_combat: "Kampf & Eingabe",
     cat_visual: "Sicht & Werkzeuge",
 
@@ -316,6 +342,20 @@
     n_physics: "Item-Physik", d_physics: "Fallengelassene Gegenstände liegen, statt zu schweben",
     n_boost: "FPS-Boost", d_boost: "Spart Zeichenarbeit, deren Ergebnis niemand sehen könnte",
     n_highlight: "Blockrahmen", d_highlight: "Hebt den Block unter dem Fadenkreuz deutlicher hervor",
+    n_scoreboard: "Scoreboard", d_scoreboard: "Scoreboard des Servers verschieben, ausblenden oder umfärben",
+    n_overlay: "Overlay", d_overlay: "Größe von Herzen, Hotbar und Leisten, Feuer, Kürbis, Schild und mehr",
+    n_lightlevel: "Lichtlevel", d_lightlevel: "Rote und grüne Kreuze, wo Monster spawnen können oder nicht",
+    n_fullbright: "Fullbright", d_fullbright: "Macht Höhlen und Nächte hell - ohne Nachtsicht",
+    n_blur: "Bewegungsunschärfe", d_blur: "Weicher Nachzieheffekt beim Drehen, abgestimmt auf PvP",
+    n_clips: "Clips", d_clips: "Behält die letzten Sekunden - eine Taste speichert sie",
+    n_brand: "Container-Logo", d_brand: "Das Space-Client-Logo in Truhen und Inventaren",
+    eb_friends: "Zusammen",
+    fr_h2: "Freunde und Gruppenchats",
+    fr_lede: "Füge Leute über ihren Minecraft-Namen hinzu und schreib ihnen von jedem Server oder aus dem Menü - ohne Discord dazwischen.",
+    fr1: "<b>Anfragen und Chats</b>, die sich live aktualisieren, eine Nachricht kommt in etwa einer Sekunde an.",
+    fr2: "<b>Gruppenchats</b> — mehrere Freunde auswählen, zusammen schreiben, später weitere einladen oder austreten.",
+    fr3: "<b>Anmeldung über Mojang</b> — dein Konto beweist, wer du bist, ein Passwort erreicht uns nie.",
+    fr4: "<b>Ränge und Abzeichen</b> über deinem Namen für VIPs, Creator, Partner und das Team.",
     n_fps: "FPS", d_fps: "Zeigt deine aktuellen Bilder pro Sekunde",
     n_cps: "CPS", d_cps: "Zeigt deine Klicks pro Sekunde",
     n_ping: "Ping", d_ping: "Zeigt deinen Ping zum Server",
@@ -346,14 +386,17 @@
     lau_lede: "Instanzen anlegen, Mods finden, Konten wechseln — ohne den Browser zu öffnen.",
     l1: "<b>Mehrere Konten</b> über Microsoft-Anmeldung, Wechsel ohne Neustart.",
     l2: "<b>Modrinth und CurseForge</b> — suchen, installieren, Abhängigkeiten kommen mit.",
-    l3: "<b>Modpacks importieren</b> aus <code>.mrpack</code>-Dateien.",
+    l3: "<b>Import und Export</b> — <code>.mrpack</code>-, NoRisk- und CurseForge-Packs rein, deine eigene Instanz raus als Space-Client-<code>.spc</code> oder Modrinth-Pack, Datei für Datei.",
     l4: "<b>Jede Java-Version</b> und jeder Mod-Loader, pro Instanz einstellbar.",
     l5: "<b>Live-Konsole</b> für jede laufende Instanz, direkt aus der Liste.",
     l6: "<b>Cosmetica vorinstallieren</b> beim Anlegen einer Instanz, ein Haken genügt.",
     l7: "<b>Mod-Sets je Server</b> — was geladen wird, vor dem Spielstart, pro Adresse.",
     l8: "<b>Welt-Sicherungen</b> vor dem Start, gepackt, solange nichts hineinschreibt.",
     l9: "<b>Absturzberichte mit Namen</b> — die Mods, die das Log wirklich nennt.",
-    l10: "<b>Die Client-Mod hält sich selbst aktuell</b>, geholt vor dem Spielstart.",
+    l10: "<b>Die passende Client-Mod für jede Version</b> — 1.21.11, 26.1, 26.2 oder 26.3, geholt vor dem Spielstart.",
+    l11: "<b>Überall dieselben Einstellungen</b> — Tastenbelegung, Serverliste und deine Space-Client-Einstellungen wandern aus deiner Hauptinstanz in jede andere.",
+    l12: "<b>Farbthemen</b> — Weltraum, Nebel, Ozean, Glut, Wald und Sakura, jedes mit eigenem bewegtem Hintergrund.",
+    l13: "<b>Clips</b> — die letzten Sekunden, mit einer Taste gespeichert und im Launcher angesehen.",
     shot_inst: "Instanzen", shot_acc: "Konto", shot_set: "Einstellungen",
     shot_run: "Läuft (1)", shot_new: "+ Neue Instanz",
 
@@ -373,14 +416,14 @@
 
     eb_start: "Loslegen",
     dl_h2: "Herunterladen",
-    dl_lau_p: "Windows-Installer. Holt Minecraft, Fabric und den Client-Mod selbst.",
+    dl_lau_p: "Windows-Installer. Holt Minecraft, Fabric, Java und die passende Client-Mod selbst.",
     dl_win: "Für Windows",
     dl_fp1: "64-Bit-Installer · 4.2 MB",
     dl_mod: "Nur der Mod",
     dl_mod_p: "Für alle, die schon einen Launcher haben. In den <code>mods</code>-Ordner legen.",
     dl_jar: "JAR herunterladen",
-    dl_fp2: "Braucht Fabric Loader und Fabric API für 26.2",
-    rq_loader: "Loader", rq_java_v: "25 oder neuer",
+    dl_fp2: "Eine JAR pro Version: 1.21.11, 26.1, 26.2 oder 26.3. Braucht Fabric Loader und Fabric API.",
+    rq_loader: "Loader", rq_java_v: "21 für 1.21.11, 25 für 26.x — der Launcher bringt es mit",
     rq_acc: "Konto", rq_acc_v: "Microsoft, Java Edition gekauft",
 
     foot_note: "Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft genehmigt oder mit ihnen verbunden."
@@ -392,21 +435,21 @@
   var CONSOLE = {
     en: [
       "[Launcher] Preparing instance cozy-and-pvp",
-      "[Launcher] Fabric Loader 0.19.3 for 26.2",
+      "[Launcher] Fabric Loader 0.19.5 for 26.3",
       "[Launcher] 14 mods checked, all up to date",
       "[Launcher] Signed in as Finanzinstitut",
-      "[Client]   Space Client v1.27.12 loaded",
-      "[Client]   24 modules ready — Right Shift opens the menu",
+      "[Client]   Space Client 1.56.0 for 26.3 loaded",
+      "[Client]   53 modules ready — Right Shift opens the menu",
       "[Client]   Cosmetica found, cosmetics active",
       "[Launcher] Game started"
     ],
     de: [
       "[Launcher] Instanz cozy-and-pvp wird vorbereitet",
-      "[Launcher] Fabric Loader 0.19.3 fuer 26.2",
+      "[Launcher] Fabric Loader 0.19.5 fuer 26.3",
       "[Launcher] 14 Mods geprueft, alle aktuell",
       "[Launcher] Angemeldet als Finanzinstitut",
-      "[Client]   Space Client v1.27.12 geladen",
-      "[Client]   24 Module bereit — Rechte Umschalttaste oeffnet das Menue",
+      "[Client]   Space Client 1.56.0 fuer 26.3 geladen",
+      "[Client]   53 Module bereit — Rechte Umschalttaste oeffnet das Menue",
       "[Client]   Cosmetica gefunden, Cosmetics aktiv",
       "[Launcher] Spiel gestartet"
     ]

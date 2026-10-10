@@ -35,7 +35,7 @@ jobs:
             curl -sSfL "$raw/$1" -o "/tmp/$2"
             # Eine Antwort, die kein Stylesheet ist, waere sonst eine
             # Fehlerseite unter einem .css-Namen, und die Demo waere weiss.
-            if [ ! -s "/tmp/$2" ] || ! head -c 400 "/tmp/$2" | grep -q "{"; then
+            if [ ! -s "/tmp/$2" ] || ! grep -q "{" "/tmp/$2" || grep -qi "<html" "/tmp/$2"; then
               echo "$1 kam nicht als Stylesheet zurueck." >&2
               exit 1
             fi
