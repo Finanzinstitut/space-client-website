@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Space Client — a Minecraft client for 1.21.11 to 26.3</title>
-<meta name="description" content="Space Client is a launcher and a Fabric mod for Minecraft 1.21.11, 26.1, 26.2 and 26.3: 53 modules, friends and group chats, clips, colour themes, Modrinth and CurseForge, several accounts and a live console." />
+<meta name="description" content="Space Client is a launcher and a mod for Fabric, Quilt, NeoForge and Forge on Minecraft 1.21.11, 26.1, 26.2 and 26.3: 53 modules, friends and group chats, clips, colour themes, Modrinth and CurseForge, several accounts and a live console." />
 <link rel="icon" href="assets/favicon.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -37,10 +37,10 @@
 <main id="top">
 
   <section class="hero">
-    <p class="eyebrow">Minecraft 1.21.11 · 26.1 · 26.2 · 26.3 · Fabric</p>
+    <p class="eyebrow">Minecraft 1.21.11 · 26.1 · 26.2 · 26.3 · Fabric · NeoForge · Forge</p>
     <h1><span data-i18n="hero_h1a">A client that</span><br /><span class="grad" data-i18n="hero_h1b">stays out of the way.</span></h1>
     <p class="lede">
-<span data-i18n="hero_lede">Space Client brings together 53 modules, friends with group chats, clips, a launcher with colour themes and several accounts, and cosmetics through Cosmetica. One mod for every full release from 1.21.11 to 26.3. Open source, free.</span>
+<span data-i18n="hero_lede">Space Client brings together 53 modules, friends with group chats, clips, a launcher with colour themes and several accounts, and cosmetics through Cosmetica. One mod for every full release from 1.21.11 to 26.3, on Fabric, Quilt, NeoForge and Forge. Open source, free.</span>
     </p>
     <div class="hero-actions">
       <a class="btn primary" href="#download" data-i18n="hero_dl">Download the launcher</a>
@@ -235,7 +235,7 @@
     <div class="dl-grid">
       <article class="dl-card">
         <h3>Launcher</h3>
-        <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, Fabric, Java and the right client mod itself.</p>
+        <p data-i18n="dl_lau_p">Windows installer. Fetches Minecraft, the mod loader, Java and the client mod built for that loader itself.</p>
         <a class="btn primary" href="download/SpaceClient-setup.exe" download data-i18n="dl_win">For Windows</a>
         <p class="fineprint"><span id="dl-version">Version 1.26.0</span> · <span data-i18n="dl_fp1">64-bit installer · 4.4 MB</span></p>
       </article>
@@ -244,13 +244,13 @@
         <h3 data-i18n="dl_mod">The mod only</h3>
         <p data-i18n-html="dl_mod_p">For anyone who already has a launcher. Drop it in the <code>mods</code> folder.</p>
         <a class="btn secondary" href="https://github.com/Finanzinstitut/Space-Client-Mod/releases" target="_blank" rel="noopener" data-i18n="dl_jar">Download the JAR</a>
-        <p class="fineprint" data-i18n="dl_fp2">One JAR per version: 1.21.11, 26.1, 26.2 or 26.3. Needs Fabric Loader and Fabric API.</p>
+        <p class="fineprint" data-i18n="dl_fp2">One JAR per version and loader: 1.21.11, 26.1, 26.2 or 26.3 for Fabric (with Fabric API), NeoForge or Forge.</p>
       </article>
     </div>
 
     <dl class="reqs">
       <div><dt>Minecraft</dt><dd>1.21.11 · 26.1 · 26.2 · 26.3</dd></div>
-      <div><dt data-i18n="rq_loader">Loader</dt><dd>Fabric</dd></div>
+      <div><dt data-i18n="rq_loader">Loader</dt><dd>Fabric · Quilt · NeoForge · Forge</dd></div>
       <div><dt>Java</dt><dd data-i18n="rq_java_v">21 for 1.21.11, 25 for 26.x — the launcher brings it</dd></div>
       <div><dt data-i18n="rq_acc">Account</dt><dd data-i18n="rq_acc_v">Microsoft, Java Edition owned</dd></div>
     </dl>
@@ -290,7 +290,7 @@
 
     hero_h1a: "Ein Client, der",
     hero_h1b: "aus dem Weg geht.",
-    hero_lede: "Space Client bringt 53 Module, Freunde mit Gruppenchats, Clips, einen Launcher mit Farbthemen und mehreren Konten und Cosmetics über Cosmetica zusammen. Eine Mod für jede Vollversion von 1.21.11 bis 26.3. Quelloffen und kostenlos.",
+    hero_lede: "Space Client bringt 53 Module, Freunde mit Gruppenchats, Clips, einen Launcher mit Farbthemen und mehreren Konten und Cosmetics über Cosmetica zusammen. Eine Mod für jede Vollversion von 1.21.11 bis 26.3, auf Fabric, Quilt, NeoForge und Forge. Quelloffen und kostenlos.",
     hero_dl: "Launcher herunterladen",
     hero_source: "Quellcode ansehen",
 
@@ -399,13 +399,13 @@
 
     eb_start: "Loslegen",
     dl_h2: "Herunterladen",
-    dl_lau_p: "Windows-Installer. Holt Minecraft, Fabric, Java und die passende Client-Mod selbst.",
+    dl_lau_p: "Windows-Installer. Holt Minecraft, den Mod-Loader, Java und die Client-Mod für genau diesen Loader selbst.",
     dl_win: "Für Windows",
     dl_fp1: "64-Bit-Installer · 4.4 MB",
     dl_mod: "Nur der Mod",
     dl_mod_p: "Für alle, die schon einen Launcher haben. In den <code>mods</code>-Ordner legen.",
     dl_jar: "JAR herunterladen",
-    dl_fp2: "Eine JAR pro Version: 1.21.11, 26.1, 26.2 oder 26.3. Braucht Fabric Loader und Fabric API.",
+    dl_fp2: "Eine JAR pro Version und Loader: 1.21.11, 26.1, 26.2 oder 26.3 für Fabric (mit Fabric API), NeoForge oder Forge.",
     rq_loader: "Loader", rq_java_v: "21 für 1.21.11, 25 für 26.x — der Launcher bringt es mit",
     rq_acc: "Konto", rq_acc_v: "Microsoft, Java Edition gekauft",
 
